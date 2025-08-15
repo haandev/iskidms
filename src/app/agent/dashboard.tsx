@@ -1,19 +1,32 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { createDeviceAction, logoutAction } from '@/lib/actions';
-import { User } from '@/lib/auth';
-import PasswordChangeModal from '@/components/password-change-modal';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { createDeviceAction, logoutAction } from "@/lib/actions";
+import { User } from "@/lib/auth";
+import PasswordChangeModal from "@/components/password-change-modal";
 
 interface Device {
   id: string;
   username: string;
   password: string;
-  status: 'pending' | 'active';
+  status: "pending" | "active";
   createdAt: number;
 }
 
@@ -22,20 +35,26 @@ interface AgentDashboardProps {
   devices: Device[];
 }
 
-export default function AgentDashboard({ user, devices: initialDevices }: AgentDashboardProps) {
+export default function AgentDashboard({
+  user,
+  devices: initialDevices,
+}: AgentDashboardProps) {
   const [devices, setDevices] = useState(initialDevices);
   const [isCreating, setIsCreating] = useState(false);
-  const [error, setError] = useState<string>('');
-  const [newDevice, setNewDevice] = useState<{ username: string; password: string } | null>(null);
+  const [error, setError] = useState<string>("");
+  const [newDevice, setNewDevice] = useState<{
+    username: string;
+    password: string;
+  } | null>(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   async function handleCreateDevice() {
     setIsCreating(true);
-    setError('');
+    setError("");
     setNewDevice(null);
-    
+
     const result = await createDeviceAction();
-    
+
     if (result?.error) {
       setError(result.error);
     } else if (result?.device) {
@@ -46,7 +65,7 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
       // Refresh the page to get updated devices list
       window.location.reload();
     }
-    
+
     setIsCreating(false);
   }
 
@@ -55,12 +74,12 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
   }
 
   const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(timestamp).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -71,11 +90,18 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Agent Dashboard</h1>
-              <p className="mt-1 text-sm text-gray-500">Welcome, {user.username}</p>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Agent Dashboard
+              </h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Welcome, {user.username}
+              </p>
             </div>
             <div className="flex gap-2">
-              <Button onClick={() => setShowPasswordModal(true)} variant="outline">
+              <Button
+                onClick={() => setShowPasswordModal(true)}
+                variant="outline"
+              >
                 Change Password
               </Button>
               <Button onClick={handleLogout} variant="outline">
@@ -94,7 +120,8 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
             <CardHeader>
               <CardTitle>Create New Device</CardTitle>
               <CardDescription>
-                Generate credentials for a new device. The device will be pending approval from an admin.
+                Generate credentials for a new device. The device will be
+                pending approval from an admin.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -103,32 +130,35 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
                   {error}
                 </div>
               )}
-              
+
               {newDevice && (
                 <div className="bg-green-50 border border-green-200 p-4 rounded-md mb-4">
-                  <h4 className="font-medium text-green-800 mb-2">Device Created Successfully!</h4>
+                  <h4 className="font-medium text-green-800 mb-2">
+                    Device Created Successfully!
+                  </h4>
                   <div className="space-y-2 text-sm">
                     <div>
-                      <span className="font-medium">Username:</span>{' '}
+                      <span className="font-medium">Username:</span>{" "}
                       <span className="font-mono bg-white px-2 py-1 rounded border">
                         {newDevice.username}
                       </span>
                     </div>
                     <div>
-                      <span className="font-medium">Password:</span>{' '}
+                      <span className="font-medium">Password:</span>{" "}
                       <span className="font-mono bg-white px-2 py-1 rounded border">
                         {newDevice.password}
                       </span>
                     </div>
                   </div>
                   <p className="text-green-700 text-xs mt-2">
-                    ⚠️ Please save these credentials now. You won't be able to see the password again until approved.
+                    ⚠️ Please save these credentials now. You won't be able to
+                    see the password again until approved.
                   </p>
                 </div>
               )}
-              
+
               <Button onClick={handleCreateDevice} disabled={isCreating}>
-                {isCreating ? 'Creating Device...' : 'Create Device'}
+                {isCreating ? "Creating Device..." : "Create Device"}
               </Button>
             </CardContent>
           </Card>
@@ -138,14 +168,17 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
             <CardHeader>
               <CardTitle>Your Devices</CardTitle>
               <CardDescription>
-                Manage your registered devices. Pending devices require admin approval.
+                Manage your registered devices. Pending devices require admin
+                approval.
               </CardDescription>
             </CardHeader>
             <CardContent>
               {devices.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   <p>No devices registered yet.</p>
-                  <p className="text-sm">Create your first device using the button above.</p>
+                  <p className="text-sm">
+                    Create your first device using the button above.
+                  </p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -165,8 +198,12 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
                             {device.username}
                           </TableCell>
                           <TableCell>
-                            <Badge 
-                              variant={device.status === 'active' ? 'default' : 'secondary'}
+                            <Badge
+                              variant={
+                                device.status === "active"
+                                  ? "default"
+                                  : "secondary"
+                              }
                             >
                               {device.status}
                             </Badge>
@@ -175,15 +212,9 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
                             {formatDate(device.createdAt)}
                           </TableCell>
                           <TableCell>
-                            {device.status === 'active' ? (
-                              <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
-                                {device.password}
-                              </span>
-                            ) : (
-                              <span className="text-gray-400 text-sm">
-                                Available after approval
-                              </span>
-                            )}
+                            <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
+                              {device.password}
+                            </span>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -197,7 +228,7 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
       </main>
 
       {/* Password Change Modal */}
-      <PasswordChangeModal 
+      <PasswordChangeModal
         isOpen={showPasswordModal}
         onClose={() => setShowPasswordModal(false)}
       />

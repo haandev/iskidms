@@ -1,17 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { approveDeviceAction, deleteDeviceAction, deleteAgentAction, logoutAction } from '@/lib/actions';
+import { deleteDeviceAction, deleteAgentAction, logoutAction, createDeviceForAgentAction } from '@/lib/actions';
 import { User } from '@/lib/auth';
 import PasswordChangeModal from '@/components/password-change-modal';
 import CreateAgentModal from '@/components/create-agent-modal';
 import ChangeAgentPasswordModal from '@/components/change-agent-password-modal';
 import TransferDeviceModal from '@/components/transfer-device-modal';
+import CSVImportModal from '@/components/csv-import-modal';
+import DeviceApprovalModal from '@/components/device-approval-modal';
 
 interface Device {
   id: string;
@@ -38,6 +41,8 @@ interface AdminDashboardProps {
 }
 
 export default function AdminDashboard({ user, pendingDevices: initialPendingDevices, allDevices: initialAllDevices, allAgents: initialAllAgents }: AdminDashboardProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [pendingDevices, setPendingDevices] = useState(initialPendingDevices);
   const [allDevices, setAllDevices] = useState(initialAllDevices);
   const [allAgents, setAllAgents] = useState(initialAllAgents);
@@ -51,23 +56,43 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
   const [selectedAgentForPasswordChange, setSelectedAgentForPasswordChange] = useState<{id: string; username: string} | null>(null);
   const [showTransferDeviceModal, setShowTransferDeviceModal] = useState(false);
   const [selectedDeviceForTransfer, setSelectedDeviceForTransfer] = useState<{id: string; username: string; agentName: string} | null>(null);
+  const [showCSVImportModal, setShowCSVImportModal] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [selectedDeviceForApproval, setSelectedDeviceForApproval] = useState<{id: string; username: string; password: string; agentName: string} | null>(null);
   const [deviceFilter, setDeviceFilter] = useState<string>('');
   const [selectedAgent, setSelectedAgent] = useState<string>('');
 
-  async function handleApproveDevice(deviceId: string) {
-    setLoadingDevice(deviceId);
-    setError('');
-    
-    const result = await approveDeviceAction(deviceId);
-    
-    if (result?.error) {
-      setError(result.error);
-    } else {
-      // Refresh the page to get updated data
-      window.location.reload();
+  // Initialize active tab from URL params
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab') as 'pending' | 'all' | 'agents' | 'unowned';
+    if (tabFromUrl && ['pending', 'all', 'agents', 'unowned'].includes(tabFromUrl)) {
+      setActiveTab(tabFromUrl);
     }
-    
-    setLoadingDevice(null);
+  }, [searchParams]);
+
+  // Function to update both state and URL
+  const updateActiveTab = (tab: 'pending' | 'all' | 'agents' | 'unowned') => {
+    setActiveTab(tab);
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.set('tab', tab);
+    router.push(`/admin?${newParams.toString()}`, { scroll: false });
+  };
+
+  // Helper function to reload page while preserving current tab
+  const reloadWithCurrentTab = () => {
+    const currentParams = new URLSearchParams(window.location.search);
+    currentParams.set('tab', activeTab);
+    window.location.href = `/admin?${currentParams.toString()}`;
+  };
+
+  function handleApproveDevice(device: {id: string; username: string; password: string; agentName: string}) {
+    setSelectedDeviceForApproval(device);
+    setShowApprovalModal(true);
+  }
+
+  function handleApprovalSuccess() {
+    // Refresh the page to get updated data while preserving tab
+    reloadWithCurrentTab();
   }
 
   async function handleDeleteDevice(deviceId: string) {
@@ -111,8 +136,13 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
   }
 
   async function handleCreateAgentSuccess() {
-    // Refresh the page to get updated data
-    window.location.reload();
+    // Refresh the page to get updated data while preserving tab
+    reloadWithCurrentTab();
+  }
+
+  async function handleCSVImportSuccess() {
+    // Refresh the page to get updated data with new unowned devices while preserving tab
+    reloadWithCurrentTab();
   }
 
   function handleChangeAgentPassword(agent: {id: string; username: string}) {
@@ -121,8 +151,28 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
   }
 
   function handleChangeAgentPasswordSuccess() {
-    // Refresh the page to get updated data
-    window.location.reload();
+    // Refresh the page to get updated data while preserving tab
+    reloadWithCurrentTab();
+  }
+
+  async function handleCreateDeviceForAgent(agentId: string, agentName: string) {
+    setLoadingAgent(agentId);
+    setError('');
+
+    const formData = new FormData();
+    formData.append('agentId', agentId);
+    formData.append('agentName', agentName);
+
+    const result = await createDeviceForAgentAction(formData);
+
+    if (result?.error) {
+      setError(result.error);
+    } else if (result?.success) {
+      // Refresh the page to show the new device while preserving tab
+      reloadWithCurrentTab();
+    }
+    
+    setLoadingAgent(null);
   }
 
   function handleTransferDevice(device: {id: string; username: string; agentName: string}) {
@@ -131,13 +181,13 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
   }
 
   function handleTransferDeviceSuccess() {
-    // Refresh the page to get updated data
-    window.location.reload();
+    // Refresh the page to get updated data while preserving tab
+    reloadWithCurrentTab();
   }
 
   function handleAgentDevicesClick(agentName: string) {
     setSelectedAgent(agentName);
-    setActiveTab('all');
+    updateActiveTab('all');
   }
 
   function clearFilters() {
@@ -172,12 +222,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
   });
 
   // Filter unowned devices (both pending and approved)
-  const unownedDevices = [...pendingDevices, ...allDevices].filter(device => !device.agentName);
-  const filteredUnownedDevices = unownedDevices.filter(device => {
-    return deviceFilter === '' || 
-      device.username.toLowerCase().includes(deviceFilter.toLowerCase()) ||
-      'unowned'.includes(deviceFilter.toLowerCase());
-  });
+  const unownedDevices = allDevices.filter(device => !device.agentName);
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('en-GB', {
@@ -285,7 +330,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
             <div className="border-b border-gray-200">
               <nav className="-mb-px flex space-x-8">
                 <button
-                  onClick={() => setActiveTab('pending')}
+                  onClick={() => updateActiveTab('pending')}
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeTab === 'pending'
                       ? 'border-blue-500 text-blue-600'
@@ -295,7 +340,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                   Pending Approval ({filteredPendingDevices.length})
                 </button>
                 <button
-                  onClick={() => setActiveTab('all')}
+                  onClick={() => updateActiveTab('all')}
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeTab === 'all'
                       ? 'border-blue-500 text-blue-600'
@@ -305,7 +350,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                   All Devices ({filteredDevices.length})
                 </button>
                 <button
-                  onClick={() => setActiveTab('agents')}
+                  onClick={() => updateActiveTab('agents')}
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeTab === 'agents'
                       ? 'border-blue-500 text-blue-600'
@@ -315,21 +360,21 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                   Agents ({allAgents.length})
                 </button>
                 <button
-                  onClick={() => setActiveTab('unowned')}
+                  onClick={() => updateActiveTab('unowned')}
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeTab === 'unowned'
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  Unowned ({filteredUnownedDevices.length})
+                  Unowned ({unownedDevices.length})
                 </button>
               </nav>
             </div>
           </div>
 
           {/* Filter Bar - Show for device tabs */}
-          {(activeTab === 'pending' || activeTab === 'all' || activeTab === 'unowned') && (
+          {(activeTab === 'pending' || activeTab === 'all') && (
             <div className="mb-6 flex gap-4 items-center">
               <div className="flex-1">
                 <Input
@@ -410,10 +455,14 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                               <div className="flex space-x-2">
                                 <Button
                                   size="sm"
-                                  onClick={() => handleApproveDevice(device.id)}
-                                  disabled={loadingDevice === device.id}
+                                  onClick={() => handleApproveDevice({
+                                    id: device.id,
+                                    username: device.username,
+                                    password: device.password,
+                                    agentName: device.agentName || 'Unowned'
+                                  })}
                                 >
-                                  {loadingDevice === device.id ? 'Approving...' : 'Approve'}
+                                  Approve
                                 </Button>
                                 <Button
                                   size="sm"
@@ -589,6 +638,13 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                               <div className="flex gap-2">
                                 <Button
                                   size="sm"
+                                  onClick={() => handleCreateDeviceForAgent(agent.id, agent.username)}
+                                  disabled={loadingAgent === agent.id}
+                                >
+                                  {loadingAgent === agent.id ? 'Creating...' : 'Create Device'}
+                                </Button>
+                                <Button
+                                  size="sm"
                                   variant="outline"
                                   onClick={() => handleChangeAgentPassword({id: agent.id, username: agent.username})}
                                   disabled={loadingAgent === agent.id}
@@ -620,13 +676,20 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
           {activeTab === 'unowned' && (
             <Card>
               <CardHeader>
-                <CardTitle>Unowned Devices</CardTitle>
-                <CardDescription>
-                  Devices that currently have no assigned agent (both pending and approved).
-                </CardDescription>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle>Unowned Devices</CardTitle>
+                    <CardDescription>
+                      Devices that currently have no assigned agent (both pending and approved).
+                    </CardDescription>
+                  </div>
+                  <Button onClick={() => setShowCSVImportModal(true)}>
+                    Import CSV
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
-                {filteredUnownedDevices.length === 0 ? (
+                {unownedDevices.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <p>No unowned devices found.</p>
                     <p className="text-sm">All devices are currently assigned to agents.</p>
@@ -645,7 +708,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {filteredUnownedDevices.map((device) => (
+                        {unownedDevices.map((device) => (
                           <TableRow key={device.id}>
                             <TableCell className="font-medium">
                               Unowned
@@ -670,10 +733,14 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                   <>
                                     <Button
                                       size="sm"
-                                      onClick={() => handleApproveDevice(device.id)}
-                                      disabled={loadingDevice === device.id}
+                                      onClick={() => handleApproveDevice({
+                                        id: device.id,
+                                        username: device.username,
+                                        password: device.password,
+                                        agentName: device.agentName || 'Unowned'
+                                      })}
                                     >
-                                      {loadingDevice === device.id ? 'Approving...' : 'Approve'}
+                                      Approve
                                     </Button>
                                     <Button
                                       size="sm"
@@ -746,6 +813,24 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
         onSuccess={handleTransferDeviceSuccess}
         device={selectedDeviceForTransfer}
         agents={allAgents}
+      />
+
+      {/* CSV Import Modal */}
+      <CSVImportModal 
+        isOpen={showCSVImportModal}
+        onClose={() => setShowCSVImportModal(false)}
+        onSuccess={handleCSVImportSuccess}
+      />
+
+      {/* Device Approval Modal */}
+      <DeviceApprovalModal 
+        isOpen={showApprovalModal}
+        onClose={() => {
+          setShowApprovalModal(false);
+          setSelectedDeviceForApproval(null);
+        }}
+        onSuccess={handleApprovalSuccess}
+        device={selectedDeviceForApproval}
       />
     </div>
   );

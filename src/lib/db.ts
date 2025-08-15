@@ -196,16 +196,26 @@ export const sessionOperations = {
 
 // Device operations
 export const deviceOperations = {
-  create: (agentId: string, agentName: string) => {
+  create: (agentId: string | null, agentNameOrUsername: string, providedPassword?: string, status: 'pending' | 'active' = 'pending') => {
     const id = nanoid();
-    const randomSuffix = nanoid(4);
-    const deviceUsername = `${agentName}_${randomSuffix}`;
-    const devicePassword = nanoid(6); // 6 character random password
+    let deviceUsername: string;
+    let devicePassword: string;
+
+    if (agentId && !providedPassword) {
+      // Agent-generated device (existing behavior)
+      const randomSuffix = nanoid(4);
+      deviceUsername = `${agentNameOrUsername}_${randomSuffix}`;
+      devicePassword = nanoid(6); // 6 character random password
+    } else {
+      // CSV import or manual device creation (new behavior)
+      deviceUsername = agentNameOrUsername;
+      devicePassword = providedPassword || nanoid(16);
+    }
 
     db.prepare(`
       INSERT INTO devices (id, agentId, username, password, status)
-      VALUES (?, ?, ?, ?, 'pending')
-    `).run(id, agentId, deviceUsername, devicePassword);
+      VALUES (?, ?, ?, ?, ?)
+    `).run(id, agentId, deviceUsername, devicePassword, status);
 
     return {
       id,

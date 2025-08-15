@@ -547,6 +547,150 @@ export async function removeDeviceOwnershipAction(formData: FormData) {
   }
 }
 
+// CSV import validation schema
+const csvDeviceSchema = z.object({
+  username: z.string().min(1, 'Device username is required').max(50, 'Device username too long'),
+  password: z.string().min(1, 'Device password is required').max(100, 'Device password too long'),
+});
+
+export async function importDevicesFromCSVAction(formData: FormData) {
+  const session = await auth.getSession();
+  
+  if (!session || session.user.role !== 'admin') {
+    return {
+      error: 'Unauthorized - admin access required',
+    };
+  }
+
+  const csvData = formData.get('csvData') as string;
+
+  if (!csvData || csvData.trim() === '') {
+    return {
+      error: 'CSV data is required',
+    };
+  }
+
+  try {
+    const lines = csvData.trim().split('\n');
+    const devices: { username: string; password: string }[] = [];
+    const errors: string[] = [];
+    
+    // Parse CSV lines
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (line === '') continue; // Skip empty lines
+      
+      const [username, password] = line.split(',').map(s => s.trim());
+      
+      if (!username || !password) {
+        errors.push(`Line ${i + 1}: Invalid format. Expected "username,password"`);
+        continue;
+      }
+      
+      // Validate each device
+      const validation = csvDeviceSchema.safeParse({ username, password });
+      if (!validation.success) {
+        errors.push(`Line ${i + 1}: ${validation.error.errors.map((e: any) => e.message).join(', ')}`);
+        continue;
+      }
+      
+      devices.push({ username, password });
+    }
+
+    if (errors.length > 0) {
+      return {
+        error: `Validation errors:\n${errors.join('\n')}`,
+      };
+    }
+
+    if (devices.length === 0) {
+      return {
+        error: 'No valid devices found in CSV data',
+      };
+    }
+
+    // Create devices in database
+    const createdDevices: string[] = [];
+    const creationErrors: string[] = [];
+
+    for (const device of devices) {
+      try {
+        const deviceId = deviceOperations.create(null, device.username, device.password, 'active');
+        createdDevices.push(device.username);
+      } catch (error) {
+        creationErrors.push(`Failed to create device "${device.username}": ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
+
+    revalidatePath('/admin');
+
+    if (creationErrors.length > 0) {
+      return {
+        error: `Some devices failed to import:\n${creationErrors.join('\n')}\n\nSuccessfully imported: ${createdDevices.length} devices`,
+      };
+    }
+
+    return {
+      success: `Successfully imported ${createdDevices.length} devices as unowned/pending`,
+    };
+  } catch (error) {
+    console.error('CSV import error:', error);
+    return {
+      error: 'Failed to process CSV data',
+    };
+  }
+}
+
+export async function createDeviceForAgentAction(formData: FormData) {
+  const session = await auth.getSession();
+  
+  if (!session || session.user.role !== 'admin') {
+    return {
+      error: 'Unauthorized - admin access required',
+    };
+  }
+
+  const agentId = formData.get('agentId') as string;
+  const agentName = formData.get('agentName') as string;
+
+  if (!agentId || !agentName) {
+    return {
+      error: 'Agent ID and name are required',
+    };
+  }
+
+  try {
+    // Verify agent exists
+    const agent = userOperations.findById(agentId);
+    if (!agent) {
+      return {
+        error: 'Agent not found',
+      };
+    }
+
+    if (agent.role !== 'agent') {
+      return {
+        error: 'User must be an agent',
+      };
+    }
+
+    // Create device for the agent
+    const device = deviceOperations.create(agentId, agentName);
+    
+    revalidatePath('/admin');
+    
+    return {
+      success: `Device created successfully: ${device.username}`,
+      device: device,
+    };
+  } catch (error) {
+    console.error('Create device for agent error:', error);
+    return {
+      error: 'Failed to create device',
+    };
+  }
+}
+
 // Helper function to get all agents (admin only)
 export async function getAllAgents() {
   const session = await auth.getSession();
