@@ -1,0 +1,25 @@
+# Node modules (install inside container)
+node_modules
+npm-debug.log
+yarn-error.log
+.pnpm-store
+
+# Local environment files
+.env
+.env.*
+
+# Next.js build cache
+.next/cache
+
+# Logs
+*.log
+
+# SQLite database (persisted via volume, not copied into image)
+data/database.sqlite
+
+# Dockerfile itself (optional, usually ignored)
+Dockerfile
+
+# Git
+.git
+.gitignore

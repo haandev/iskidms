@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import path from 'path';
 
 // Database file path
-const DB_PATH = path.join(process.cwd(), 'tmp', 'database.sqlite');
+const DB_PATH = path.join(process.cwd(), 'data', 'database.sqlite');
 
 // Initialize database connection
 const db = new Database(DB_PATH);
