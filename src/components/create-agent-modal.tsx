@@ -50,9 +50,9 @@ export default function CreateAgentModal({ isOpen, onClose, onSuccess }: CreateA
       <div className="max-w-md w-full mx-4">
         <Card>
           <CardHeader>
-            <CardTitle>Create New Agent</CardTitle>
+            <CardTitle>Yeni Firma Oluştur</CardTitle>
             <CardDescription>
-              Add a new agent to the system
+              Sisteme yeni bir firma ekleyin
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -70,38 +70,38 @@ export default function CreateAgentModal({ isOpen, onClose, onSuccess }: CreateA
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">Kullanıcı Adı</Label>
                 <Input
                   id="username"
                   name="username"
                   type="text"
                   required
                   disabled={isLoading}
-                  placeholder="Enter agent username (min 3 characters)"
+                  placeholder="Firma kullanıcı adını girin (en az 3 karakter)"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Şifre</Label>
                 <Input
                   id="password"
                   name="password"
                   type="password"
                   required
                   disabled={isLoading}
-                  placeholder="Enter password (min 6 characters)"
+                  placeholder="Şifre girin (en az 6 karakter)"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Şifre Tekrar</Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
                   required
                   disabled={isLoading}
-                  placeholder="Confirm password"
+                  placeholder="Şifre tekrar girin"
                 />
               </div>
 
@@ -111,7 +111,7 @@ export default function CreateAgentModal({ isOpen, onClose, onSuccess }: CreateA
                   className="flex-1"
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Creating...' : 'Create Agent'}
+                  {isLoading ? 'Oluşturuluyor...' : 'Firma Oluştur'}
                 </Button>
                 <Button
                   type="button"
@@ -119,7 +119,7 @@ export default function CreateAgentModal({ isOpen, onClose, onSuccess }: CreateA
                   onClick={onClose}
                   disabled={isLoading}
                 >
-                  Cancel
+                  İptal Et
                 </Button>
               </div>
             </form>

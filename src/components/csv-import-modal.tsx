@@ -77,7 +77,7 @@ export default function CSVImportModal({ isOpen, onClose, onSuccess }: CSVImport
           <CardHeader>
             <CardTitle>Import Devices from CSV</CardTitle>
             <CardDescription>
-              Upload devices in bulk using CSV format. All devices will be created as unowned/pending.
+              Upload devices in bulk using CSV format. Tümü will be created as unowned/pending.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -128,7 +128,7 @@ export default function CSVImportModal({ isOpen, onClose, onSuccess }: CSVImport
                   <li>Each line: <code>device_username,device_password</code></li>
                   <li>No header row required</li>
                   <li>Empty lines will be skipped</li>
-                  <li>All devices will be created as <strong>unowned</strong> and <strong>pending</strong></li>
+                  <li>Tümü will be created as <strong>unowned</strong> and <strong>pending</strong></li>
                   <li>You can assign ownership later using the transfer function</li>
                 </ul>
               </div>

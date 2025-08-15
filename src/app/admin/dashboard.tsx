@@ -208,7 +208,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
     
     const matchesAgent = selectedAgent === '' || 
       device.agentName === selectedAgent ||
-      (!device.agentName && selectedAgent === 'Unowned');
+      (!device.agentName && selectedAgent === 'Atanmamış');
     
     return matchesSearch && matchesAgent;
   });
@@ -241,15 +241,15 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="mt-1 text-sm text-gray-500">Welcome, {user.username}</p>
+              <h1 className="text-3xl font-bold text-gray-900">Yönetici Ekranı</h1>
+              <p className="mt-1 text-sm text-gray-500">Hoşgeldiniz, {user.username}</p>
             </div>
             <div className="flex gap-2">
               <Button onClick={() => setShowPasswordModal(true)} variant="outline">
-                Change Password
+                Şifre Değiştir
               </Button>
               <Button onClick={handleLogout} variant="outline">
-                Logout
+                Çıkış Yap
               </Button>
             </div>
           </div>
@@ -265,7 +265,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
               <CardContent className="p-6">
                 <div className="flex items-center">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Pending Approval</p>
+                    <p className="text-sm font-medium text-gray-600">Onay Bekleyen</p>
                     <p className="text-2xl font-bold text-orange-600">{pendingDevices.length}</p>
                   </div>
                 </div>
@@ -276,7 +276,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
               <CardContent className="p-6">
                 <div className="flex items-center">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Active Devices</p>
+                    <p className="text-sm font-medium text-gray-600">Onaylı</p>
                     <p className="text-2xl font-bold text-green-600">
                       {allDevices.filter(d => d.status === 'active').length}
                     </p>
@@ -289,7 +289,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
               <CardContent className="p-6">
                 <div className="flex items-center">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Devices</p>
+                    <p className="text-sm font-medium text-gray-600">Tümü</p>
                     <p className="text-2xl font-bold text-blue-600">{allDevices.length}</p>
                   </div>
                 </div>
@@ -300,7 +300,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
               <CardContent className="p-6">
                 <div className="flex items-center">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Agents</p>
+                    <p className="text-sm font-medium text-gray-600">Firmalar</p>
                     <p className="text-2xl font-bold text-purple-600">{allAgents.length}</p>
                   </div>
                 </div>
@@ -311,7 +311,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
               <CardContent className="p-6">
                 <div className="flex items-center">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Unowned Devices</p>
+                    <p className="text-sm font-medium text-gray-600">Atanmamış</p>
                     <p className="text-2xl font-bold text-gray-600">{unownedDevices.length}</p>
                   </div>
                 </div>
@@ -337,7 +337,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  Pending Approval ({filteredPendingDevices.length})
+                  Onay Bekleyen ({filteredPendingDevices.length})
                 </button>
                 <button
                   onClick={() => updateActiveTab('all')}
@@ -347,7 +347,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  All Devices ({filteredDevices.length})
+                  Tümü ({filteredDevices.length})
                 </button>
                 <button
                   onClick={() => updateActiveTab('agents')}
@@ -357,7 +357,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  Agents ({allAgents.length})
+                  Firmalar ({allAgents.length})
                 </button>
                 <button
                   onClick={() => updateActiveTab('unowned')}
@@ -367,7 +367,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  Unowned ({unownedDevices.length})
+                  Atanmamış ({unownedDevices.length})
                 </button>
               </nav>
             </div>
@@ -378,7 +378,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
             <div className="mb-6 flex gap-4 items-center">
               <div className="flex-1">
                 <Input
-                  placeholder="Search devices by name or agent..."
+                  placeholder="Cihaz adı veya firma arama..."
                   value={deviceFilter}
                   onChange={(e) => setDeviceFilter(e.target.value)}
                   className="max-w-md"
@@ -414,18 +414,22 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
           {activeTab === 'pending' && (
             <Card>
               <CardHeader>
-                <CardTitle>Pending Device Approvals</CardTitle>
+                <CardTitle>Onay Bekleyen</CardTitle>
                 <CardDescription>
-                  Review and approve or delete devices waiting for approval.
+                  Onay Bekleyen cihazları görüntüleyin ve onaylayın.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {filteredPendingDevices.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     {pendingDevices.length === 0 ? (
-                      <p>No devices pending approval.</p>
+                      <p>
+                        Onay Bekleyen cihaz bulunamadı.
+                      </p>
                     ) : (
-                      <p>No devices match your search criteria.</p>
+                      <p>
+                        Arama kriterlerinize göre cihaz bulunamadı.
+                      </p>
                     )}
                   </div>
                 ) : (
@@ -433,17 +437,17 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Agent</TableHead>
-                          <TableHead>Device Username</TableHead>
-                          <TableHead>Created</TableHead>
-                          <TableHead>Actions</TableHead>
+                          <TableHead>Firma</TableHead>
+                          <TableHead>Cihaz Kullanıcı Adı</TableHead>
+                          <TableHead>Oluşturulma Tarihi</TableHead>
+                          <TableHead>İşlemler</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {filteredPendingDevices.map((device) => (
                           <TableRow key={device.id}>
                             <TableCell className="font-medium">
-                              {device.agentName || 'Unowned'}
+                              {device.agentName || 'Atanmamış'}
                             </TableCell>
                             <TableCell className="font-mono text-sm">
                               {device.username}
@@ -459,10 +463,10 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                     id: device.id,
                                     username: device.username,
                                     password: device.password,
-                                    agentName: device.agentName || 'Unowned'
+                                    agentName: device.agentName || 'Atanmamış'
                                   })}
                                 >
-                                  Approve
+                                  Onayla
                                 </Button>
                                 <Button
                                   size="sm"
@@ -470,7 +474,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                   onClick={() => handleDeleteDevice(device.id)}
                                   disabled={loadingDevice === device.id}
                                 >
-                                  {loadingDevice === device.id ? 'Deleting...' : 'Delete'}
+                                  {loadingDevice === device.id ? 'Siliniyor...' : 'Sil'}
                                 </Button>
                               </div>
                             </TableCell>
@@ -487,18 +491,18 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
           {activeTab === 'all' && (
             <Card>
               <CardHeader>
-                <CardTitle>All Devices</CardTitle>
+                <CardTitle>Tümü</CardTitle>
                 <CardDescription>
-                  View all devices in the system with their credentials.
+                  Tümünü görüntüleyin ve kimlik bilgilerini görüntüleyin.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {filteredDevices.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     {allDevices.length === 0 ? (
-                      <p>No devices in the system.</p>
+                      <p>Sistemde cihaz bulunamadı.</p>
                     ) : (
-                      <p>No devices match your search criteria.</p>
+                      <p>Arama kriterlerinize göre cihaz bulunamadı.</p>
                     )}
                   </div>
                 ) : (
@@ -506,19 +510,19 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Agent</TableHead>
-                          <TableHead>Device Username</TableHead>
-                          <TableHead>Password</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Created</TableHead>
-                          <TableHead>Actions</TableHead>
+                          <TableHead>Firma</TableHead>
+                          <TableHead>Cihaz Kullanıcı Adı</TableHead>
+                          <TableHead>Şifre</TableHead>
+                          <TableHead>Durum</TableHead>
+                          <TableHead>Oluşturulma Tarihi</TableHead>
+                          <TableHead>İşlemler</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {filteredDevices.map((device) => (
                           <TableRow key={device.id}>
                             <TableCell className="font-medium">
-                              {device.agentName || 'Unowned'}
+                              {device.agentName || 'Atanmamış'}
                             </TableCell>
                             <TableCell className="font-mono text-sm">
                               {device.username}
@@ -530,7 +534,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                               <Badge 
                                 variant={device.status === 'active' ? 'default' : 'secondary'}
                               >
-                                {device.status}
+                                {device.status === 'active' ? 'Aktif' : 'Onay Bekliyor'}
                               </Badge>
                             </TableCell>
                             <TableCell className="text-sm text-gray-500">
@@ -548,7 +552,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                   })}
                                   disabled={loadingDevice === device.id}
                                 >
-                                  Transfer
+                                  Sahiplik Atama
                                 </Button>
                                 <Button
                                   size="sm"
@@ -556,7 +560,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                   onClick={() => handleDeleteDevice(device.id)}
                                   disabled={loadingDevice === device.id}
                                 >
-                                  {loadingDevice === device.id ? 'Deleting...' : 'Delete'}
+                                  {loadingDevice === device.id ? 'Siliniyor...' : 'Sil'}
                                 </Button>
                               </div>
                             </TableCell>
@@ -575,32 +579,35 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <div>
-                    <CardTitle>Agents Management</CardTitle>
+                    <CardTitle>Firma Yönetimi</CardTitle>
                     <CardDescription>
-                      Manage system agents and their access.
+                      Firmalari yönetin ve erişimlerini düzenleyin.
                     </CardDescription>
                   </div>
                   <Button onClick={() => setShowCreateAgentModal(true)}>
-                    Create Agent
+                    Firma Oluştur
                   </Button>
                 </div>
               </CardHeader>
               <CardContent>
                 {allAgents.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
-                    <p>No agents in the system.</p>
-                    <p className="text-sm">Create your first agent using the button above.</p>
+                    <p>
+                      Firma bulunamadı.
+                    </p>
+                    <p className="text-sm">
+                      Firma oluşturmak için yukarıdaki butona tıklayın.
+                    </p>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Username</TableHead>
-                          <TableHead>Role</TableHead>
-                          <TableHead>Devices</TableHead>
-                          <TableHead>Created</TableHead>
-                          <TableHead>Actions</TableHead>
+                          <TableHead>Kullanıcı Adı</TableHead>
+                          <TableHead>Cihazlar</TableHead>
+                          <TableHead>Oluşturulma Tarihi</TableHead>
+                          <TableHead>İşlemler</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -613,11 +620,6 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                               )}
                             </TableCell>
                             <TableCell>
-                              <Badge variant="default">
-                                {agent.role}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
                               {agent.deviceCount > 0 ? (
                                 <Button
                                   variant="link"
@@ -625,10 +627,10 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                   className="h-auto p-0 text-blue-600 hover:text-blue-800"
                                   onClick={() => handleAgentDevicesClick(agent.username)}
                                 >
-                                  {agent.deviceCount} device{agent.deviceCount !== 1 ? 's' : ''}
+                                  {agent.deviceCount} cihaz
                                 </Button>
                               ) : (
-                                <span className="text-gray-500 text-sm">0 devices</span>
+                                <span className="text-gray-500 text-sm">Cihaz yok</span>
                               )}
                             </TableCell>
                             <TableCell className="text-sm text-gray-500">
@@ -641,7 +643,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                   onClick={() => handleCreateDeviceForAgent(agent.id, agent.username)}
                                   disabled={loadingAgent === agent.id}
                                 >
-                                  {loadingAgent === agent.id ? 'Creating...' : 'Create Device'}
+                                  {loadingAgent === agent.id ? 'Oluşturuluyor...' : 'Cihaz Hesabı Oluştur'}
                                 </Button>
                                 <Button
                                   size="sm"
@@ -649,7 +651,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                   onClick={() => handleChangeAgentPassword({id: agent.id, username: agent.username})}
                                   disabled={loadingAgent === agent.id}
                                 >
-                                  Change Password
+                                  Şifre Değiştir
                                 </Button>
                                 {agent.id !== user.id && (
                                   <Button
@@ -658,7 +660,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                     onClick={() => handleDeleteAgent(agent.id)}
                                     disabled={loadingAgent === agent.id}
                                   >
-                                    {loadingAgent === agent.id ? 'Deleting...' : 'Delete'}
+                                    {loadingAgent === agent.id ? 'Siliniyor...' : 'Sil'}
                                   </Button>
                                 )}
                               </div>
@@ -678,40 +680,43 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <div>
-                    <CardTitle>Unowned Devices</CardTitle>
+                    <CardTitle>Atanmamış</CardTitle>
                     <CardDescription>
-                      Devices that currently have no assigned agent (both pending and approved).
-                    </CardDescription>
+Herhangi bir firmae atanmamış cihazlar                   </CardDescription>
                   </div>
                   <Button onClick={() => setShowCSVImportModal(true)}>
-                    Import CSV
+                    CSV İçe Aktar
                   </Button>
                 </div>
               </CardHeader>
               <CardContent>
                 {unownedDevices.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
-                    <p>No unowned devices found.</p>
-                    <p className="text-sm">All devices are currently assigned to agents.</p>
+                    <p>
+                      Atanmamış cihaz bulunamadı.
+                    </p>
+                    <p className="text-sm">
+                      Tümü firmalere atanmıştır.
+                    </p>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Agent</TableHead>
-                          <TableHead>Device Username</TableHead>
-                          <TableHead>Device Password</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Created</TableHead>
-                          <TableHead>Actions</TableHead>
+                          <TableHead>Firma</TableHead>
+                          <TableHead>Cihaz Kullanıcı Adı</TableHead>
+                          <TableHead>Cihaz Şifresi</TableHead>
+                          <TableHead>Durum</TableHead>
+                          <TableHead>Oluşturulma Tarihi</TableHead>
+                          <TableHead>İşlemler</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {unownedDevices.map((device) => (
                           <TableRow key={device.id}>
                             <TableCell className="font-medium">
-                              Unowned
+                              Atanmamış
                             </TableCell>
                             <TableCell className="font-mono text-sm">
                               {device.username}
@@ -721,7 +726,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                             </TableCell>
                             <TableCell>
                               <Badge variant={device.status === 'active' ? 'default' : 'secondary'}>
-                                {device.status}
+                                {device.status === 'active' ? 'Aktif' : 'Onay Bekliyor'}
                               </Badge>
                             </TableCell>
                             <TableCell className="text-sm text-gray-500">
@@ -737,10 +742,10 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                         id: device.id,
                                         username: device.username,
                                         password: device.password,
-                                        agentName: device.agentName || 'Unowned'
+                                        agentName: device.agentName || 'Atanmamış'
                                       })}
                                     >
-                                      Approve
+                                      Onayla
                                     </Button>
                                     <Button
                                       size="sm"
@@ -748,7 +753,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                       onClick={() => handleDeleteDevice(device.id)}
                                       disabled={loadingDevice === device.id}
                                     >
-                                      {loadingDevice === device.id ? 'Deleting...' : 'Delete'}
+                                      {loadingDevice === device.id ? 'Siliniyor...' : 'Sil'}
                                     </Button>
                                   </>
                                 )}
@@ -763,7 +768,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                   })}
                                   disabled={loadingDevice === device.id}
                                 >
-                                  Assign Owner
+                                  Sahiplik Atama
                                 </Button>
                               </div>
                             </TableCell>

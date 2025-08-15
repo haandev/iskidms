@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UK BSDMS - Device Management System",
-  description: "British Standard Device Management System",
+  title: "CHYS",
+  description: "UKBS Cihaz Hesabı Yönetim Sistemi",
 };
 
 export default function RootLayout({

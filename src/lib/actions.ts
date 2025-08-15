@@ -284,7 +284,7 @@ export async function getPendingDevices() {
   return deviceOperations.findPending();
 }
 
-// Helper function to get all devices (admin only)
+// Helper function to get Tümü (admin only)
 export async function getAllDevices() {
   const session = await auth.getSession();
   
@@ -337,12 +337,12 @@ export async function createAgentAction(formData: FormData) {
     revalidatePath('/admin');
     
     return {
-      success: 'Agent created successfully',
+      success: 'Firma oluşturuldu',
     };
   } catch (error) {
     console.error('Create agent error:', error);
     return {
-      error: 'An error occurred while creating agent',
+      error: 'Firma oluşturulurken bir hata oluştu',
     };
   }
 }
@@ -352,7 +352,7 @@ export async function deleteAgentAction(agentId: string) {
   
   if (!session || session.user.role !== 'admin') {
     return {
-      error: 'Unauthorized - admin access required',
+      error: 'Yetkisiz - yönetici erişimi gerekiyor',
     };
   }
 
@@ -360,7 +360,7 @@ export async function deleteAgentAction(agentId: string) {
     // Don't allow deleting self
     if (agentId === session.userId) {
       return {
-        error: 'Cannot delete your own account',
+        error: 'Kendi hesabınızı silemezsiniz',
       };
     }
 
@@ -369,12 +369,12 @@ export async function deleteAgentAction(agentId: string) {
     revalidatePath('/admin');
     
     return {
-      success: 'Agent deleted successfully',
+      success: 'Firma silindi',
     };
   } catch (error) {
     console.error('Delete agent error:', error);
     return {
-      error: 'Failed to delete agent',
+      error: 'Firma silinirken bir hata oluştu',
     };
   }
 }
@@ -384,7 +384,7 @@ const changeAgentPasswordSchema = z.object({
   newPassword: z.string().min(6, 'New password must be at least 6 characters'),
   confirmPassword: z.string(),
 }).refine(data => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match",
+  message: "Şifreler eşleşmiyor",
   path: ["confirmPassword"],
 });
 
@@ -393,7 +393,7 @@ export async function changeAgentPasswordAction(formData: FormData) {
   
   if (!session || session.user.role !== 'admin') {
     return {
-      error: 'Unauthorized - admin access required',
+      error: 'Yetkisiz - yönetici erişimi gerekiyor',
     };
   }
 
@@ -438,12 +438,12 @@ export async function changeAgentPasswordAction(formData: FormData) {
     revalidatePath('/admin');
     
     return {
-      success: 'Agent password changed successfully. Agent will need to log in again.',
+      success: 'Firma şifresi başarıyla değiştirildi. Firma tekrar giriş yapmalıdır.',
     };
   } catch (error) {
     console.error('Change agent password error:', error);
     return {
-      error: 'An error occurred while changing password',
+      error: 'Şifre değiştirilirken bir hata oluştu',
     };
   }
 }
@@ -453,7 +453,7 @@ export async function transferDeviceOwnershipAction(formData: FormData) {
   
   if (!session || session.user.role !== 'admin') {
     return {
-      error: 'Unauthorized - admin access required',
+      error: 'Yetkisiz - yönetici erişimi gerekiyor',
     };
   }
 
@@ -462,7 +462,7 @@ export async function transferDeviceOwnershipAction(formData: FormData) {
 
   if (!deviceId || !newAgentId) {
     return {
-      error: 'Device ID and new agent are required',
+      error: 'Cihaz ID ve yeni firma gereklidir',
     };
   }
 
@@ -471,7 +471,7 @@ export async function transferDeviceOwnershipAction(formData: FormData) {
     const device = deviceOperations.findById(deviceId);
     if (!device) {
       return {
-        error: 'Device not found',
+        error: 'Cihaz bulunamadı',
       };
     }
 
@@ -479,13 +479,13 @@ export async function transferDeviceOwnershipAction(formData: FormData) {
     const newAgent = userOperations.findById(newAgentId);
     if (!newAgent) {
       return {
-        error: 'New agent not found',
+        error: 'Yeni firma bulunamadı',
       };
     }
 
     if (newAgent.role !== 'agent') {
       return {
-        error: 'Target user must be an agent',
+        error: 'Hedef kullanıcı bir firma olmalıdır',
       };
     }
 
@@ -495,12 +495,12 @@ export async function transferDeviceOwnershipAction(formData: FormData) {
     revalidatePath('/admin');
     
     return {
-      success: `Device ownership transferred to ${newAgent.username} successfully`,
+      success: `Cihaz sahipliği ${newAgent.username} firmaine başarıyla aktarıldı`,
     };
   } catch (error) {
     console.error('Transfer device ownership error:', error);
     return {
-      error: 'Failed to transfer device ownership',
+      error: 'Cihaz sahipliği aktarılırken bir hata oluştu',
     };
   }
 }
@@ -510,7 +510,7 @@ export async function removeDeviceOwnershipAction(formData: FormData) {
   
   if (!session || session.user.role !== 'admin') {
     return {
-      error: 'Unauthorized - admin access required',
+      error: 'Yetkisiz - yönetici erişimi gerekiyor',
     };
   }
 
@@ -518,7 +518,7 @@ export async function removeDeviceOwnershipAction(formData: FormData) {
 
   if (!deviceId) {
     return {
-      error: 'Device ID is required',
+      error: 'Cihaz ID gereklidir',
     };
   }
 
@@ -527,7 +527,7 @@ export async function removeDeviceOwnershipAction(formData: FormData) {
     const device = deviceOperations.findById(deviceId);
     if (!device) {
       return {
-        error: 'Device not found',
+        error: 'Cihaz bulunamadı',
       };
     }
 
@@ -537,12 +537,12 @@ export async function removeDeviceOwnershipAction(formData: FormData) {
     revalidatePath('/admin');
     
     return {
-      success: 'Device ownership removed successfully',
+      success: 'Cihaz sahipliği başarıyla kaldırıldı',
     };
   } catch (error) {
     console.error('Remove device ownership error:', error);
     return {
-      error: 'Failed to remove device ownership',
+      error: 'Cihaz sahipliği kaldırılırken bir hata oluştu',
     };
   }
 }
@@ -558,7 +558,7 @@ export async function importDevicesFromCSVAction(formData: FormData) {
   
   if (!session || session.user.role !== 'admin') {
     return {
-      error: 'Unauthorized - admin access required',
+      error: 'Yetkisiz - yönetici erişimi gerekiyor',
     };
   }
 
@@ -566,7 +566,7 @@ export async function importDevicesFromCSVAction(formData: FormData) {
 
   if (!csvData || csvData.trim() === '') {
     return {
-      error: 'CSV data is required',
+      error: 'CSV verisi gereklidir',
     };
   }
 
@@ -583,14 +583,14 @@ export async function importDevicesFromCSVAction(formData: FormData) {
       const [username, password] = line.split(',').map(s => s.trim());
       
       if (!username || !password) {
-        errors.push(`Line ${i + 1}: Invalid format. Expected "username,password"`);
+        errors.push(`Satır ${i + 1}: Geçersiz format. Beklenen "username,password"`);
         continue;
       }
       
       // Validate each device
       const validation = csvDeviceSchema.safeParse({ username, password });
       if (!validation.success) {
-        errors.push(`Line ${i + 1}: ${validation.error.errors.map((e: any) => e.message).join(', ')}`);
+        errors.push(`Satır ${i + 1}: ${validation.error.issues.map((e: any) => e.message).join(', ')}`);
         continue;
       }
       
@@ -605,7 +605,7 @@ export async function importDevicesFromCSVAction(formData: FormData) {
 
     if (devices.length === 0) {
       return {
-        error: 'No valid devices found in CSV data',
+        error: 'CSV verisinde geçerli cihaz bulunamadı',
       };
     }
 
@@ -618,7 +618,7 @@ export async function importDevicesFromCSVAction(formData: FormData) {
         const deviceId = deviceOperations.create(null, device.username, device.password, 'active');
         createdDevices.push(device.username);
       } catch (error) {
-        creationErrors.push(`Failed to create device "${device.username}": ${error instanceof Error ? error.message : 'Unknown error'}`);
+        creationErrors.push(`Cihaz oluşturulurken hata oluştu: "${device.username}": ${error instanceof Error ? error.message : 'Bilinmeyen hata'}`);
       }
     }
 
@@ -626,17 +626,17 @@ export async function importDevicesFromCSVAction(formData: FormData) {
 
     if (creationErrors.length > 0) {
       return {
-        error: `Some devices failed to import:\n${creationErrors.join('\n')}\n\nSuccessfully imported: ${createdDevices.length} devices`,
+        error: `Bazı cihazlar için hata oluştu:\n${creationErrors.join('\n')}\n\nBaşarıyla içe aktarılan cihazlar: ${createdDevices.length} cihaz`,
       };
     }
 
     return {
-      success: `Successfully imported ${createdDevices.length} devices as unowned/pending`,
+      success: `Başarıyla ${createdDevices.length} cihaz içe aktarıldı`,
     };
   } catch (error) {
-    console.error('CSV import error:', error);
+    console.error('CSV içe aktarma hatası:', error);
     return {
-      error: 'Failed to process CSV data',
+        error: 'CSV verisi işlenirken bir hata oluştu',
     };
   }
 }
@@ -646,7 +646,7 @@ export async function createDeviceForAgentAction(formData: FormData) {
   
   if (!session || session.user.role !== 'admin') {
     return {
-      error: 'Unauthorized - admin access required',
+      error: 'Yetkisiz - yönetici erişimi gerekiyor',
     };
   }
 
@@ -655,7 +655,7 @@ export async function createDeviceForAgentAction(formData: FormData) {
 
   if (!agentId || !agentName) {
     return {
-      error: 'Agent ID and name are required',
+      error: 'Firma ID ve adı gereklidir',
     };
   }
 
@@ -664,13 +664,13 @@ export async function createDeviceForAgentAction(formData: FormData) {
     const agent = userOperations.findById(agentId);
     if (!agent) {
       return {
-        error: 'Agent not found',
+        error: 'Firma bulunamadı',
       };
     }
 
     if (agent.role !== 'agent') {
       return {
-        error: 'User must be an agent',
+        error: 'Kullanıcı bir firma olmalıdır',
       };
     }
 
@@ -680,13 +680,13 @@ export async function createDeviceForAgentAction(formData: FormData) {
     revalidatePath('/admin');
     
     return {
-      success: `Device created successfully: ${device.username}`,
+      success: `Cihaz başarıyla oluşturuldu: ${device.username}`,
       device: device,
     };
   } catch (error) {
     console.error('Create device for agent error:', error);
     return {
-      error: 'Failed to create device',
+      error: 'Cihaz oluşturulurken bir hata oluştu',
     };
   }
 }

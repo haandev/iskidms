@@ -29,15 +29,15 @@ export default function LoginForm() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">UK BSDMS</h1>
-          <p className="mt-2 text-sm text-gray-600">British Standard Device Management System</p>
+          <h1 className="text-3xl font-bold text-gray-900">CHYS</h1>
+          <p className="mt-2 text-sm text-gray-600">Cihaz Hesabı Yönetim Sistemi</p>
         </div>
         
         <Card>
           <CardHeader>
-            <CardTitle>Sign in to your account</CardTitle>
+            <CardTitle>Hesabınıza Giriş Yapın</CardTitle>
             <CardDescription>
-              Enter your credentials to access the system
+              Giriş bilgilerinizi giriniz
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -49,7 +49,7 @@ export default function LoginForm() {
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">Kullanıcı Adı</Label>
                 <Input
                   id="username"
                   name="username"
@@ -61,7 +61,7 @@ export default function LoginForm() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Şifre</Label>
                 <Input
                   id="password"
                   name="password"
@@ -77,24 +77,20 @@ export default function LoginForm() {
                 className="w-full"
                 disabled={isLoading}
               >
-                {isLoading ? 'Signing in...' : 'Sign in'}
+                {isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
               </Button>
             </form>
             
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Don't have an account?{' '}
+                Hesabınız yok mu?{' '}
                 <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
-                  Register as an agent
+                  Firma olarak kayıt olun
                 </Link>
               </p>
             </div>
             
-            <div className="mt-4 p-4 bg-gray-50 rounded-md">
-              <p className="text-xs text-gray-600 font-medium">Default Admin Credentials:</p>
-              <p className="text-xs text-gray-500">Username: admin</p>
-              <p className="text-xs text-gray-500">Password: password123</p>
-            </div>
+            
           </CardContent>
         </Card>
       </div>

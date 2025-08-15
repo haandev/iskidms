@@ -91,10 +91,10 @@ export default function AgentDashboard({
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Agent Dashboard
+                Firma Ekranı
               </h1>
               <p className="mt-1 text-sm text-gray-500">
-                Welcome, {user.username}
+                Hoşgeldiniz, {user.username}
               </p>
             </div>
             <div className="flex gap-2">
@@ -102,10 +102,10 @@ export default function AgentDashboard({
                 onClick={() => setShowPasswordModal(true)}
                 variant="outline"
               >
-                Change Password
+                Şifre Değiştir
               </Button>
               <Button onClick={handleLogout} variant="outline">
-                Logout
+                Çıkış Yap
               </Button>
             </div>
           </div>
@@ -118,10 +118,9 @@ export default function AgentDashboard({
           {/* Create Device Section */}
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>Create New Device</CardTitle>
+              <CardTitle>Yeni Cihaz Hesabı Oluştur</CardTitle>
               <CardDescription>
-                Generate credentials for a new device. The device will be
-                pending approval from an admin.
+                Yeni bir cihaz oluşturun. Cihaz onay bekleyen olarak başlar ve bir yönetici tarafından onaylanacaktır.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -134,31 +133,30 @@ export default function AgentDashboard({
               {newDevice && (
                 <div className="bg-green-50 border border-green-200 p-4 rounded-md mb-4">
                   <h4 className="font-medium text-green-800 mb-2">
-                    Device Created Successfully!
+                    Cihaz Başarıyla Oluşturuldu!
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div>
-                      <span className="font-medium">Username:</span>{" "}
+                      <span className="font-medium">Kullanıcı Adı:</span>{" "}
                       <span className="font-mono bg-white px-2 py-1 rounded border">
                         {newDevice.username}
                       </span>
                     </div>
                     <div>
-                      <span className="font-medium">Password:</span>{" "}
+                      <span className="font-medium">Şifre:</span>{" "}
                       <span className="font-mono bg-white px-2 py-1 rounded border">
                         {newDevice.password}
                       </span>
                     </div>
                   </div>
                   <p className="text-green-700 text-xs mt-2">
-                    ⚠️ Please save these credentials now. You won't be able to
-                    see the password again until approved.
+                    ⚠️ Lütfen şifreleri kaydedin.
                   </p>
                 </div>
               )}
 
               <Button onClick={handleCreateDevice} disabled={isCreating}>
-                {isCreating ? "Creating Device..." : "Create Device"}
+                {isCreating ? "Oluşturuluyor..." : "Cihaz Hesabı Oluştur"}
               </Button>
             </CardContent>
           </Card>
@@ -166,18 +164,17 @@ export default function AgentDashboard({
           {/* Devices List */}
           <Card>
             <CardHeader>
-              <CardTitle>Your Devices</CardTitle>
+              <CardTitle>Cihazlarınız</CardTitle>
               <CardDescription>
-                Manage your registered devices. Pending devices require admin
-                approval.
+                Kayıtlı cihazlarınızı yönetin. Onay bekleyen cihazlar yönetici onayı gerektirir.
               </CardDescription>
             </CardHeader>
             <CardContent>
               {devices.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
-                  <p>No devices registered yet.</p>
+                  <p>Henüz cihaz kaydı yapılmadı.</p>
                   <p className="text-sm">
-                    Create your first device using the button above.
+                    Yukarıdaki butonu kullanarak ilk cihazınızı oluşturun.
                   </p>
                 </div>
               ) : (
@@ -185,10 +182,10 @@ export default function AgentDashboard({
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Device Username</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Created</TableHead>
-                        <TableHead>Password</TableHead>
+                        <TableHead>Cihaz Kullanıcı Adı</TableHead>
+                        <TableHead>Durum</TableHead>
+                        <TableHead>Oluşturulma Tarihi</TableHead>
+                        <TableHead>Şifre</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -205,7 +202,7 @@ export default function AgentDashboard({
                                   : "secondary"
                               }
                             >
-                              {device.status}
+                              {device.status === 'active' ? 'Aktif' : 'Onay Bekliyor'}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-sm text-gray-500">

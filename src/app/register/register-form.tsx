@@ -42,9 +42,9 @@ export default function RegisterForm() {
         
         <Card>
           <CardHeader>
-            <CardTitle>Register as Agent</CardTitle>
+            <CardTitle>Firma Olarak Kayıt Olun</CardTitle>
             <CardDescription>
-              Create your agent account to manage devices
+              Cihazlarınızı yönetmek için firma hesabınızı oluşturun
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -62,7 +62,7 @@ export default function RegisterForm() {
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">Kullanıcı Adı</Label>
                 <Input
                   id="username"
                   name="username"
@@ -70,12 +70,12 @@ export default function RegisterForm() {
                   autoComplete="username"
                   required
                   disabled={isLoading}
-                  placeholder="Enter username (min 3 characters)"
+                  placeholder="Kullanıcı adınızı giriniz (en az 3 karakter)"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Şifre</Label>
                 <Input
                   id="password"
                   name="password"
@@ -83,12 +83,12 @@ export default function RegisterForm() {
                   autoComplete="new-password"
                   required
                   disabled={isLoading}
-                  placeholder="Enter password (min 6 characters)"
+                  placeholder="Şifrenizi giriniz (en az 6 karakter)"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Şifre Tekrar</Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
@@ -96,7 +96,7 @@ export default function RegisterForm() {
                   autoComplete="new-password"
                   required
                   disabled={isLoading}
-                  placeholder="Confirm your password"
+                  placeholder="Şifrenizi tekrar giriniz"
                 />
               </div>
 
@@ -105,15 +105,15 @@ export default function RegisterForm() {
                 className="w-full"
                 disabled={isLoading}
               >
-                {isLoading ? 'Creating account...' : 'Create account'}
+                {isLoading ? 'Hesap oluşturuluyor...' : 'Hesap Oluştur'}
               </Button>
             </form>
             
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Already have an account?{' '}
+                Hesabınız var mı?{' '}
                 <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
-                  Sign in
+                  Giriş Yap
                 </Link>
               </p>
             </div>

@@ -191,9 +191,9 @@ export default function TransferDeviceModal({
       <div className="max-w-md w-full mx-4">
         <Card>
           <CardHeader>
-            <CardTitle>Manage Device Ownership</CardTitle>
+            <CardTitle>Cihaz Sahipliğini Yönet</CardTitle>
             <CardDescription>
-              Transfer device <strong>{device.username}</strong> {device.agentName ? `from ${device.agentName}` : '(currently unowned)'} to another agent, or remove ownership entirely
+              <strong>{device.username}</strong> cihazını başka bir firma tarafından kullanılabilir hale getirin, ya da sahipliği tamamen kaldırın
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -211,10 +211,10 @@ export default function TransferDeviceModal({
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="newAgent">Transfer to Agent</Label>
+                <Label htmlFor="newAgent">Sahiplik Atama</Label>
                 {availableAgents.length === 0 ? (
                   <div className="text-gray-500 text-sm p-3 border rounded">
-                    No other agents available for transfer
+                    Başka bir firma yok
                   </div>
                 ) : (
                   <div className="relative" ref={autocompleteRef}>
@@ -256,7 +256,7 @@ export default function TransferDeviceModal({
                     {showSuggestions && searchTerm.length > 0 && filteredAgents.length === 0 && (
                       <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
                         <div className="px-3 py-2 text-gray-500 text-sm">
-                          No agents found matching "{searchTerm}"
+                          "{searchTerm}" ile eşleşen firma bulunamadı
                         </div>
                       </div>
                     )}
@@ -265,7 +265,7 @@ export default function TransferDeviceModal({
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 p-3 rounded text-sm text-yellow-800">
-                <strong>Note:</strong> Transferring will move the device to the selected agent. Removing ownership will mark the device as unowned. The device status will remain unchanged in both cases.
+                <strong>Not:</strong> Sahiplik atama yapıldıktan sonra cihaz seçilen firma tarafından kullanılabilir hale getirilecektir. Sahiplik kaldırıldıktan sonra cihaz atanmamış olarak işaretlenecektir. Cihaz durumu her iki durumda da değişmeyecektir.
               </div>
 
               <div className="flex flex-col gap-2 pt-4">
@@ -275,7 +275,7 @@ export default function TransferDeviceModal({
                     className="flex-1"
                     disabled={isLoading || !selectedAgentId || availableAgents.length === 0}
                   >
-                    {isLoading ? 'Transferring...' : 'Transfer Device'}
+                    {isLoading ? 'Transfer Ediliyor...' : 'Sahiplik Atama'}
                   </Button>
                   <Button
                     type="button"
@@ -283,7 +283,7 @@ export default function TransferDeviceModal({
                     onClick={handleClose}
                     disabled={isLoading}
                   >
-                    Cancel
+                    İptal Et
                   </Button>
                 </div>
                 
@@ -300,7 +300,7 @@ export default function TransferDeviceModal({
                   disabled={isLoading}
                   className="w-full"
                 >
-                  {isLoading ? 'Removing...' : 'Remove Owner (Mark as Unowned)'}
+                  {isLoading ? 'Siliyor...' : 'Sahiplik Kaldır (Atanmamış Olarak İşaretle)'}
                 </Button>
               </div>
             </form>

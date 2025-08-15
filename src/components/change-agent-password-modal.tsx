@@ -117,7 +117,7 @@ export default function ChangeAgentPasswordModal({
                   className="flex-1"
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Changing...' : 'Change Password'}
+                  {isLoading ? 'Değiştiriliyor...' : 'Şifre Değiştir'}
                 </Button>
                 <Button
                   type="button"

@@ -48,9 +48,9 @@ export default function PasswordChangeModal({ isOpen, onClose }: PasswordChangeM
       <div className="max-w-md w-full mx-4">
         <Card>
           <CardHeader>
-            <CardTitle>Change Password</CardTitle>
+            <CardTitle>Şifre Değiştir</CardTitle>
             <CardDescription>
-              Update your account password
+              Hesabınızın şifresini güncelleyin
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -68,38 +68,38 @@ export default function PasswordChangeModal({ isOpen, onClose }: PasswordChangeM
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="currentPassword">Current Password</Label>
+                <Label htmlFor="currentPassword">Mevcut Şifre</Label>
                 <Input
                   id="currentPassword"
                   name="currentPassword"
                   type="password"
                   required
                   disabled={isLoading}
-                  placeholder="Enter current password"
+                  placeholder="Mevcut şifreyi giriniz"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
+                <Label htmlFor="newPassword">Yeni Şifre</Label>
                 <Input
                   id="newPassword"
                   name="newPassword"
                   type="password"
                   required
                   disabled={isLoading}
-                  placeholder="Enter new password (min 6 characters)"
+                  placeholder="Yeni şifreyi giriniz (en az 6 karakter)"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <Label htmlFor="confirmPassword">Yeni Şifre Tekrar</Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
                   required
                   disabled={isLoading}
-                  placeholder="Confirm new password"
+                  placeholder="Yeni şifreyi tekrar giriniz"
                 />
               </div>
 
@@ -109,7 +109,7 @@ export default function PasswordChangeModal({ isOpen, onClose }: PasswordChangeM
                   className="flex-1"
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Changing...' : 'Change Password'}
+                  {isLoading ? 'Değiştiriliyor...' : 'Şifre Değiştir'}
                 </Button>
                 <Button
                   type="button"
@@ -117,7 +117,7 @@ export default function PasswordChangeModal({ isOpen, onClose }: PasswordChangeM
                   onClick={onClose}
                   disabled={isLoading}
                 >
-                  Cancel
+                    İptal Et
                 </Button>
               </div>
             </form>

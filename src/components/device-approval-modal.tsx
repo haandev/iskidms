@@ -75,9 +75,9 @@ export default function DeviceApprovalModal({ isOpen, onClose, onSuccess, device
       <div className="max-w-md w-full mx-4">
         <Card>
           <CardHeader>
-            <CardTitle>Approve Device</CardTitle>
+            <CardTitle>Cihazı Onayla</CardTitle>
             <CardDescription>
-              Review device credentials for <strong>{device.agentName}</strong> before approval
+              Onaylamadan önce <strong>{device.agentName}</strong> için cihaz bilgilerini gözden geçirin
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -95,7 +95,7 @@ export default function DeviceApprovalModal({ isOpen, onClose, onSuccess, device
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="deviceUsername">Device Username</Label>
+                <Label htmlFor="deviceUsername">Cihaz Kullanıcı Adı</Label>
                 <div className="flex gap-2">
                   <Input
                     id="deviceUsername"
@@ -121,7 +121,7 @@ export default function DeviceApprovalModal({ isOpen, onClose, onSuccess, device
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="devicePassword">Device Password</Label>
+                <Label htmlFor="devicePassword">Cihaz Şifresi</Label>
                 <div className="flex gap-2">
                   <Input
                     id="devicePassword"
@@ -147,7 +147,7 @@ export default function DeviceApprovalModal({ isOpen, onClose, onSuccess, device
               </div>
 
               <div className="bg-blue-50 border border-blue-200 p-3 rounded text-sm text-blue-800">
-                <strong>Note:</strong> Once approved, this device will be activated and ready for use by the agent.
+                <strong>Not:</strong> Onaylandıktan sonra bu cihaz aktif hale getirilecek ve firma tarafından kullanılabilir hale gelecektir.
               </div>
 
               <div className="flex gap-2 pt-4">
@@ -156,7 +156,7 @@ export default function DeviceApprovalModal({ isOpen, onClose, onSuccess, device
                   className="flex-1"
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Approving...' : 'Confirm Approval'}
+                  {isLoading ? 'Onaylanıyor...' : 'Onayla'}
                 </Button>
                 <Button
                   type="button"
@@ -164,7 +164,7 @@ export default function DeviceApprovalModal({ isOpen, onClose, onSuccess, device
                   onClick={handleClose}
                   disabled={isLoading}
                 >
-                  Cancel
+                  İptal Et
                 </Button>
               </div>
             </div>
