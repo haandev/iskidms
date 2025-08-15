@@ -651,7 +651,7 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                                   onClick={() => handleChangeAgentPassword({id: agent.id, username: agent.username})}
                                   disabled={loadingAgent === agent.id}
                                 >
-                                  Şifre Değiştir
+                                  Bilgileri Görüntüle
                                 </Button>
                                 {agent.id !== user.id && (
                                   <Button
