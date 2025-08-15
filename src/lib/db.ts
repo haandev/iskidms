@@ -97,12 +97,12 @@ export const userOperations = {
     return first(result);
   },
 
-  create: async (username: string, password: string, role: 'admin' | 'agent') => {
+  create: async (username: string, password: string, role: 'admin' | 'agent', company_name: string, email: string, phone: string, issuer_person: string) => {
     const id = nanoid();
     const passwordHash = await bcrypt.hash(password, 12);
     await client.execute(
-      'INSERT INTO users (id, username, passwordHash, role) VALUES (?, ?, ?, ?)',
-      [id, username, passwordHash, role]
+      'INSERT INTO users (id, username, passwordHash, role, company_name, email, phone, issuer_person) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [id, username, passwordHash, role, company_name, email, phone, issuer_person]
     );
     return id;
   },
