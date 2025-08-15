@@ -8,25 +8,29 @@ import { auth } from './auth';
 
 // Validation schemas
 const loginSchema = z.object({
-  username: z.string().min(1, 'Username is required'),
-  password: z.string().min(1, 'Password is required'),
+  username: z.string().min(1, 'Kullanıcı adı gereklidir'),
+  password: z.string().min(1, 'Şifre gereklidir'),
 });
 
 const registerSchema = z.object({
-  username: z.string().min(3, 'Username must be at least 3 characters'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  username: z.string().min(3, 'Kullanıcı adı en az 3 karakter olmalıdır'),
+  password: z.string().min(6, 'Şifre en az 6 karakter olmalıdır'),
   confirmPassword: z.string(),
+  company_name: z.string().min(1, 'Firma adı gereklidir'),
+  email: z.email('Invalid email address'),
+  phone: z.string().min(1, 'Telefon numarası gereklidir'),
+  issuer_person: z.string().min(1, 'Yetkili kişi gereklidir'),
 }).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
+  message: "Şifreler eşleşmiyor",
   path: ["confirmPassword"],
 });
 
 const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1, 'Current password is required'),
-  newPassword: z.string().min(6, 'New password must be at least 6 characters'),
+  currentPassword: z.string().min(1, 'Mevcut şifre gereklidir'),
+  newPassword: z.string().min(6, 'Yeni şifre en az 6 karakter olmalıdır'),
   confirmPassword: z.string(),
 }).refine(data => data.newPassword === data.confirmPassword, {
-  message: "New passwords don't match",
+  message: "Yeni şifreler eşleşmiyor",
   path: ["confirmPassword"],
 });
 
@@ -86,6 +90,10 @@ export async function registerAction(formData: FormData) {
     username: formData.get('username') as string,
     password: formData.get('password') as string,
     confirmPassword: formData.get('confirmPassword') as string,
+    company_name: formData.get('company_name') as string,
+    email: formData.get('email') as string,
+    phone: formData.get('phone') as string,
+    issuer_person: formData.get('issuer_person') as string,
   };
 
   const validatedData = registerSchema.safeParse(rawData);
@@ -104,7 +112,7 @@ export async function registerAction(formData: FormData) {
     
     if (existingUser) {
       return {
-        error: 'Username already exists',
+        error: 'Kullanıcı adı zaten mevcut',
       };
     }
 
@@ -112,12 +120,12 @@ export async function registerAction(formData: FormData) {
     await userOperations.create(username, password, 'agent');
 
     return {
-      success: 'Account created successfully. Please log in.',
+      success: 'Hesap başarıyla oluşturuldu. Lütfen giriş yapınız.',
     };
   } catch (error) {
     console.error('Registration error:', error);
     return {
-      error: 'An error occurred during registration',
+      error: 'Kayıt sırasında bir hata oluştu',
     };
   }
 }
@@ -132,7 +140,7 @@ export async function changePasswordAction(formData: FormData) {
   
   if (!session) {
     return {
-      error: 'Unauthorized - please log in again',
+      error: 'Yetkisiz - lütfen tekrar giriş yapınız',
     };
   }
 
@@ -158,7 +166,7 @@ export async function changePasswordAction(formData: FormData) {
     
     if (!user) {
       return {
-        error: 'User not found',
+        error: 'Kullanıcı bulunamadı',
       };
     }
 
@@ -167,7 +175,7 @@ export async function changePasswordAction(formData: FormData) {
     
     if (!isCurrentPasswordValid) {
       return {
-        error: 'Current password is incorrect',
+        error: 'Mevcut şifre yanlış',
       };
     }
 
@@ -175,12 +183,12 @@ export async function changePasswordAction(formData: FormData) {
     await userOperations.updatePassword(session.userId, newPassword);
 
     return {
-      success: 'Password changed successfully',
+      success: 'Şifre başarıyla değiştirildi',
     };
   } catch (error) {
     console.error('Change password error:', error);
     return {
-      error: 'An error occurred while changing password',
+      error: 'Şifre değiştirilirken bir hata oluştu',
     };
   }
 }
@@ -191,7 +199,7 @@ export async function createDeviceAction() {
   
   if (!session || session.user.role !== 'agent') {
     return {
-      error: 'Unauthorized',
+      error: 'Yetkisiz',
     };
   }
 
@@ -201,13 +209,13 @@ export async function createDeviceAction() {
     revalidatePath('/agent');
     
     return {
-      success: 'Device created successfully',
+      success: 'Cihaz hesabı başarıyla oluşturuldu',
       device,
     };
   } catch (error) {
     console.error('Create device error:', error);
     return {
-      error: 'Failed to create device',
+      error: 'Cihaz hesabı oluşturulurken bir hata oluştu',
     };
   }
 }
@@ -217,7 +225,7 @@ export async function approveDeviceAction(deviceId: string) {
   
   if (!session || session.user.role !== 'admin') {
     return {
-      error: 'Unauthorized',
+      error: 'Yetkisiz',
     };
   }
 
@@ -227,12 +235,12 @@ export async function approveDeviceAction(deviceId: string) {
     revalidatePath('/admin');
     
     return {
-      success: 'Device approved successfully',
+      success: 'Cihaz hesabı onaylandı',
     };
   } catch (error) {
     console.error('Approve device error:', error);
     return {
-      error: 'Failed to approve device',
+      error: 'Cihaz hesabı onaylanırken bir hata oluştu',
     };
   }
 }
@@ -242,7 +250,7 @@ export async function deleteDeviceAction(deviceId: string) {
   
   if (!session || session.user.role !== 'admin') {
     return {
-      error: 'Unauthorized',
+      error: 'Yetkisiz',
     };
   }
 
@@ -252,12 +260,12 @@ export async function deleteDeviceAction(deviceId: string) {
     revalidatePath('/admin');
     
     return {
-      success: 'Device deleted successfully',
+      success: 'Cihaz hesabı başarıyla silindi',
     };
   } catch (error) {
     console.error('Delete device error:', error);
     return {
-      error: 'Failed to delete device',
+      error: 'Cihaz hesabı silinirken bir hata oluştu',
     };
   }
 }
@@ -301,7 +309,7 @@ export async function createAgentAction(formData: FormData) {
   
   if (!session || session.user.role !== 'admin') {
     return {
-      error: 'Unauthorized - admin access required',
+      error: 'Yetkisiz - yönetici erişimi gerekiyor',
     };
   }
 
@@ -327,7 +335,7 @@ export async function createAgentAction(formData: FormData) {
     
     if (existingUser) {
       return {
-        error: 'Username already exists',
+        error: 'Kullanıcı adı zaten mevcut',
       };
     }
 
@@ -419,13 +427,7 @@ export async function changeAgentPasswordAction(formData: FormData) {
     
     if (!agent) {
       return {
-        error: 'Agent not found',
-      };
-    }
-
-    if (agent.role !== 'agent') {
-      return {
-        error: 'Can only change passwords for agents',
+        error: 'Firma bulunamadı',
       };
     }
 
@@ -549,8 +551,8 @@ export async function removeDeviceOwnershipAction(formData: FormData) {
 
 // CSV import validation schema
 const csvDeviceSchema = z.object({
-  username: z.string().min(1, 'Device username is required').max(50, 'Device username too long'),
-  password: z.string().min(1, 'Device password is required').max(100, 'Device password too long'),
+  username: z.string().min(1, 'Cihaz hesabı kullanıcı adı gereklidir').max(50, 'Cihaz hesabı kullanıcı adı çok uzun'),
+  password: z.string().min(1, 'Cihaz hesabı şifresi gereklidir').max(100, 'Cihaz hesabı şifresi çok uzun'),
 });
 
 export async function importDevicesFromCSVAction(formData: FormData) {
