@@ -19,7 +19,7 @@ const SESSION_COOKIE_NAME = 'session_id';
 export const auth = {
   // Create a new session and set cookie
   async createSession(userId: string): Promise<string> {
-    const session = sessionOperations.create(userId);
+    const session = await sessionOperations.create(userId);
     
     (await cookies()).set(SESSION_COOKIE_NAME, session.id, {
       httpOnly: true,
@@ -41,7 +41,7 @@ export const auth = {
       return null;
     }
 
-    const session = sessionOperations.findById(sessionId);
+    const session = await sessionOperations.findById(sessionId);
 
     if (!session) {
       // Session not found or expired, clear cookie

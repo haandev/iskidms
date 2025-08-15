@@ -48,7 +48,7 @@ export async function loginAction(formData: FormData) {
   const { username, password } = validatedData.data;
 
   try {
-    const user = userOperations.findByUsername(username);
+    const user = await userOperations.findByUsername(username);
     
     if (!user) {
       return {
@@ -100,7 +100,7 @@ export async function registerAction(formData: FormData) {
 
   try {
     // Check if username already exists
-    const existingUser = userOperations.findByUsername(username);
+    const existingUser = await userOperations.findByUsername(username);
     
     if (existingUser) {
       return {
@@ -154,7 +154,7 @@ export async function changePasswordAction(formData: FormData) {
 
   try {
     // Get user to verify current password
-    const user = userOperations.findByUsername(session.user.username);
+    const user = await userOperations.findByUsername(session.user.username);
     
     if (!user) {
       return {
@@ -196,7 +196,7 @@ export async function createDeviceAction() {
   }
 
   try {
-    const device = deviceOperations.create(session.userId, session.user.username);
+    const device = await deviceOperations.create(session.userId, session.user.username);
     
     revalidatePath('/agent');
     
@@ -281,7 +281,7 @@ export async function getPendingDevices() {
     return [];
   }
 
-  return deviceOperations.findPending();
+  return await deviceOperations.findPending();
 }
 
 // Helper function to get Tümü (admin only)
@@ -323,7 +323,7 @@ export async function createAgentAction(formData: FormData) {
 
   try {
     // Check if username already exists
-    const existingUser = userOperations.findByUsername(username);
+    const existingUser = await userOperations.findByUsername(username);
     
     if (existingUser) {
       return {
@@ -415,7 +415,7 @@ export async function changeAgentPasswordAction(formData: FormData) {
 
   try {
     // Get agent to verify they exist and are an agent
-    const agent = userOperations.findById(agentId);
+    const agent = await userOperations.findById(agentId);
     
     if (!agent) {
       return {
@@ -476,7 +476,7 @@ export async function transferDeviceOwnershipAction(formData: FormData) {
     }
 
     // Verify new agent exists and is an agent
-    const newAgent = userOperations.findById(newAgentId);
+    const newAgent = await userOperations.findById(newAgentId);
     if (!newAgent) {
       return {
         error: 'Yeni firma bulunamadı',
@@ -661,7 +661,7 @@ export async function createDeviceForAgentAction(formData: FormData) {
 
   try {
     // Verify agent exists
-    const agent = userOperations.findById(agentId);
+    const agent = await userOperations.findById(agentId);
     if (!agent) {
       return {
         error: 'Firma bulunamadı',
@@ -675,7 +675,7 @@ export async function createDeviceForAgentAction(formData: FormData) {
     }
 
     // Create device for the agent
-    const device = deviceOperations.create(agentId, agentName);
+    const device = await deviceOperations.create(agentId, agentName);
     
     revalidatePath('/admin');
     

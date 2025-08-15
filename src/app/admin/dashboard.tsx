@@ -16,7 +16,7 @@ import TransferDeviceModal from '@/components/transfer-device-modal';
 import CSVImportModal from '@/components/csv-import-modal';
 import DeviceApprovalModal from '@/components/device-approval-modal';
 
-interface Device {
+export interface Device {
   id: string;
   username: string;
   password: string;
@@ -25,7 +25,7 @@ interface Device {
   agentName: string;
 }
 
-interface Agent {
+export interface Agent {
   id: string;
   username: string;
   role: string;
@@ -33,7 +33,7 @@ interface Agent {
   deviceCount: number;
 }
 
-interface AdminDashboardProps {
+export interface AdminDashboardProps {
   user: User;
   pendingDevices: Device[];
   allDevices: Device[];
