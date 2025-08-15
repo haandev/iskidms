@@ -1,5 +1,5 @@
 import { auth } from '@/lib/auth';
-import { getPendingDevices, getAllDevices } from '@/lib/actions';
+import { getPendingDevices, getAllDevices, getAllAgents } from '@/lib/actions';
 import { redirect } from 'next/navigation';
 import AdminDashboard from './dashboard';
 
@@ -15,9 +15,10 @@ export default async function AdminPage() {
     redirect('/agent');
   }
 
-  const [pendingDevices, allDevices] = await Promise.all([
+  const [pendingDevices, allDevices, allAgents] = await Promise.all([
     getPendingDevices(),
     getAllDevices(),
+    getAllAgents(),
   ]);
 
   return (
@@ -25,6 +26,7 @@ export default async function AdminPage() {
       user={session.user} 
       pendingDevices={pendingDevices}
       allDevices={allDevices}
+      allAgents={allAgents}
     />
   );
 }

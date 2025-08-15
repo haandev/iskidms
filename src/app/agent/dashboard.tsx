@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { createDeviceAction, logoutAction } from '@/lib/actions';
 import { User } from '@/lib/auth';
+import PasswordChangeModal from '@/components/password-change-modal';
 
 interface Device {
   id: string;
@@ -26,6 +27,7 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string>('');
   const [newDevice, setNewDevice] = useState<{ username: string; password: string } | null>(null);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   async function handleCreateDevice() {
     setIsCreating(true);
@@ -72,9 +74,14 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
               <h1 className="text-3xl font-bold text-gray-900">Agent Dashboard</h1>
               <p className="mt-1 text-sm text-gray-500">Welcome, {user.username}</p>
             </div>
-            <Button onClick={handleLogout} variant="outline">
-              Logout
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={() => setShowPasswordModal(true)} variant="outline">
+                Change Password
+              </Button>
+              <Button onClick={handleLogout} variant="outline">
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -188,6 +195,12 @@ export default function AgentDashboard({ user, devices: initialDevices }: AgentD
           </Card>
         </div>
       </main>
+
+      {/* Password Change Modal */}
+      <PasswordChangeModal 
+        isOpen={showPasswordModal}
+        onClose={() => setShowPasswordModal(false)}
+      />
     </div>
   );
 }

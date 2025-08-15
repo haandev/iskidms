@@ -1,117 +1,36 @@
-# UK BSDMS - British Standard Device Management System
-
-A comprehensive device management system built with Next.js, TypeScript, and SQLite.
-
-## Features
-
-- **Authentication System**: Secure login with bcrypt password hashing
-- **Role-based Access Control**: Admin and Agent roles with different permissions
-- **Agent Self-registration**: Agents can register themselves
-- **Device Management**: Agents can create devices, admins can approve/delete them
-- **Session Management**: Secure sessions with httpOnly cookies
-- **Real-time Updates**: Server Actions for immediate UI updates
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-### Prerequisites
+First, run the development server:
 
-- Node.js 18+ 
-- npm
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-### Installation
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-1. Clone the repository or use the existing project
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+## Learn More
 
-## Default Admin Credentials
+To learn more about Next.js, take a look at the following resources:
 
-- **Username**: `admin`
-- **Password**: `password123`
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## User Flows
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-### Agent Flow
-1. **Registration**: Visit `/register` to create an agent account
-2. **Login**: Use credentials to sign in at `/login`
-3. **Device Management**: Create devices from the agent dashboard
-4. **View Devices**: See all your devices and their status
+## Deploy on Vercel
 
-### Admin Flow
-1. **Login**: Use admin credentials at `/login`
-2. **Dashboard**: View pending devices requiring approval
-3. **Device Approval**: Approve or delete pending devices
-4. **View All Devices**: See all devices in the system with credentials
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-## Technical Details
-
-### Database Schema
-
-- **users**: id, username, passwordHash, role, createdAt
-- **sessions**: id, userId, createdAt, expiresAt
-- **devices**: id, agentId, username, password, status, createdAt
-- **meta**: key, value (for initialization flag)
-
-### Security Features
-
-- Password hashing with bcrypt (12 rounds)
-- Secure session management with expiration
-- HttpOnly, Secure, SameSite cookies
-- Role-based route protection
-- CSRF protection via Server Actions
-
-### Device Credentials
-
-- **Device Username**: `{agentName}_{random4chars}`
-- **Device Password**: 24-character random string
-- **Storage**: Device passwords stored as plain text (as specified)
-
-## Routes
-
-- `/` - Home (redirects based on authentication)
-- `/login` - Login page (shared by admin & agents)
-- `/register` - Agent self-registration
-- `/agent` - Agent dashboard (protected)
-- `/admin` - Admin dashboard (protected)
-
-## Development
-
-The application uses:
-- **Next.js 15** with App Router
-- **TypeScript** for type safety
-- **shadcn/ui** for modern UI components
-- **better-sqlite3** for database operations
-- **Server Actions** for form handling
-- **Zod** for form validation
-
-## Database
-
-The SQLite database is automatically created on first run with:
-- Table creation and indexing
-- Admin user seeding
-- Session cleanup
-
-## Deployment
-
-For production deployment:
-1. Set `NODE_ENV=production`
-2. Configure proper domain for cookies
-3. Use a production-grade database if needed
-4. Set up proper SSL certificates
-
-## Security Notes
-
-- User passwords are hashed with bcrypt
-- Device passwords are stored in plain text (as required)
-- Sessions expire after 30 days
-- All routes are protected by middleware
-- Form submissions use Server Actions for CSRF protection# iskidms
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

@@ -115,6 +115,39 @@ export const userOperations = {
   verifyPassword: async (hashedPassword: string, plainPassword: string) => {
     return await bcrypt.compare(plainPassword, hashedPassword);
   },
+
+  updatePassword: async (userId: string, newPassword: string) => {
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    
+    db.prepare(`
+      UPDATE users SET passwordHash = ? WHERE id = ?
+    `).run(passwordHash, userId);
+  },
+
+  findAllAgents: () => {
+    return db.prepare(`
+      SELECT 
+        u.id, 
+        u.username, 
+        u.role, 
+        u.createdAt,
+        COUNT(d.id) as deviceCount
+      FROM users u
+      LEFT JOIN devices d ON u.id = d.agentId
+      WHERE u.role = 'agent' 
+      GROUP BY u.id, u.username, u.role, u.createdAt
+      ORDER BY u.createdAt DESC
+    `).all() as any[];
+  },
+
+  deleteById: (userId: string) => {
+    // Delete user's devices first (due to foreign key constraint)
+    db.prepare('DELETE FROM devices WHERE agentId = ?').run(userId);
+    // Delete user's sessions
+    db.prepare('DELETE FROM sessions WHERE userId = ?').run(userId);
+    // Finally delete the user
+    db.prepare('DELETE FROM users WHERE id = ?').run(userId);
+  },
 };
 
 // Session operations
