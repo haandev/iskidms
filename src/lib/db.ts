@@ -23,10 +23,10 @@ export const initializeDatabase = async () => {
       passwordHash TEXT NOT NULL,
       role TEXT NOT NULL CHECK (role IN ('admin','agent')),
       createdAt INTEGER NOT NULL DEFAULT (strftime('%s','now') * 1000)
-      company_name TEXT
-      email TEXT
-      phone TEXT
-      issuer_person TEXT
+      company_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      issuer_person TEXT NOT NULL
     )
   `);
 
@@ -76,8 +76,8 @@ export const initializeDatabase = async () => {
       const adminId = nanoid();
       const passwordHash = await bcrypt.hash('password123', 12);
       await client.execute(
-        'INSERT INTO users (id, username, passwordHash, role) VALUES (?, ?, ?, ?)',
-        [adminId, 'admin', passwordHash, 'admin']
+        'INSERT INTO users (id, username, passwordHash, role, company_name, email, phone, issuer_person) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [adminId, 'admin', passwordHash, 'admin', 'admin', 'admin', 'admin', 'admin']
       );
       console.log('Admin user created: admin / password123');
     }
