@@ -64,12 +64,34 @@ export default function ChangeAgentPasswordModal({
       <div className="max-w-md w-full mx-4">
         <Card>
           <CardHeader>
-            <CardTitle>Change Agent Password</CardTitle>
+            <CardTitle>Şifre Değiştir</CardTitle>
             <CardDescription>
-              Change password for agent: <strong>{agent.username}</strong>
+              Şifre değiştirmek istediğiniz agent: <strong>{agent.username}</strong>
             </CardDescription>
           </CardHeader>
           <CardContent>
+            // here add company information company name, email, phone, issuer person
+            <div className="space-y-2">
+              <Label htmlFor="companyName">Firma Adı</Label>
+              <Input id="companyName" name="companyName" disabled />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" name="email" disabled />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="phone">Telefon</Label>
+              <Input id="phone" name="phone" disabled />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="issuerPerson">Yetkili Kişi</Label>
+              <Input id="issuerPerson" name="issuerPerson" disabled />
+            </div>
+            
+            
             <form id="change-agent-password-form" action={handleSubmit} className="space-y-4">
               {error && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative">
@@ -84,31 +106,31 @@ export default function ChangeAgentPasswordModal({
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
+                <Label htmlFor="newPassword">Yeni Şifre</Label>
                 <Input
                   id="newPassword"
                   name="newPassword"
                   type="password"
                   required
                   disabled={isLoading}
-                  placeholder="Enter new password (min 6 characters)"
+                  placeholder="Yeni şifre giriniz (en az 6 karakter)"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <Label htmlFor="confirmPassword">Yeni Şifre Tekrar</Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
                   required
                   disabled={isLoading}
-                  placeholder="Confirm new password"
+                  placeholder="Yeni şifre tekrarını giriniz"
                 />
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 p-3 rounded text-sm text-yellow-800">
-                <strong>Note:</strong> The agent will be logged out and will need to log in again with the new password.
+                <strong>Not:</strong> Agent tekrar giriş yapmak için yeniden giriş yapması gerekecektir.
               </div>
 
               <div className="flex gap-2 pt-4">
@@ -125,7 +147,7 @@ export default function ChangeAgentPasswordModal({
                   onClick={onClose}
                   disabled={isLoading}
                 >
-                  Cancel
+                  İptal
                 </Button>
               </div>
             </form>
