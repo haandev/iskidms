@@ -17,3 +17,4 @@ export const isDevelopment = process.env.NODE_ENV === 'development';
 export const useTurso = !!(dbConfig.turso.url && dbConfig.turso.authToken);
 
 export const databaseConfig = useTurso ? dbConfig.turso : dbConfig.local;
+ 
