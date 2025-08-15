@@ -766,3 +766,34 @@ export async function getAllAgents() {
 
   return userOperations.findAllAgents();
 }
+
+// Helper function to get agent details by ID (admin only)
+export async function getAgentById(agentId: string) {
+  const session = await auth.getSession();
+
+  if (!session || session.user.role !== "admin") {
+    return null;
+  }
+
+  try {
+    const agent = await userOperations.findById(agentId);
+    
+    if (!agent || agent.role !== "agent") {
+      return null;
+    }
+
+    return {
+      id: agent.id,
+      username: agent.username,
+      company_name: agent.company_name,
+      email: agent.email,
+      phone: agent.phone,
+      issuer_person: agent.issuer_person,
+      role: agent.role,
+      createdAt: agent.createdAt
+    };
+  } catch (error) {
+    console.error("Get agent by ID error:", error);
+    return null;
+  }
+}

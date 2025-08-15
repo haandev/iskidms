@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { changeAgentPasswordAction } from '@/lib/actions';
+import { changeAgentPasswordAction, getAgentById } from '@/lib/actions';
 
 interface ChangeAgentPasswordModalProps {
   isOpen: boolean;
@@ -26,6 +26,42 @@ export default function ChangeAgentPasswordModal({
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [agentDetails, setAgentDetails] = useState<{
+    company_name: string;
+    email: string;
+    phone: string;
+    issuer_person: string;
+  } | null>(null);
+
+  // Fetch agent details when modal opens
+  useEffect(() => {
+    const fetchAgentDetails = async () => {
+      if (agent?.id && isOpen) {
+        try {
+          const details = await getAgentById(agent.id);
+          if (details) {
+            setAgentDetails({
+              company_name: details.company_name,
+              email: details.email,
+              phone: details.phone,
+              issuer_person: details.issuer_person
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching agent details:', error);
+        }
+      }
+    };
+
+    if (isOpen) {
+      fetchAgentDetails();
+    } else {
+      // Clear details when modal closes
+      setAgentDetails(null);
+      setError('');
+      setSuccess('');
+    }
+  }, [agent?.id, isOpen]);
 
   async function handleSubmit(formData: FormData) {
     if (!agent) return;
@@ -70,25 +106,48 @@ export default function ChangeAgentPasswordModal({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            // here add company information company name, email, phone, issuer person
             <div className="space-y-2">
               <Label htmlFor="companyName">Firma Adı</Label>
-              <Input id="companyName" name="companyName" disabled />
+              <Input 
+                id="company_name" 
+                name="company_name" 
+                value={agentDetails?.company_name || ''} 
+                disabled 
+                readOnly
+              />
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" disabled />
+              <Input 
+                id="email" 
+                name="email" 
+                value={agentDetails?.email || ''} 
+                disabled 
+                readOnly
+              />
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="phone">Telefon</Label>
-              <Input id="phone" name="phone" disabled />
+              <Input 
+                id="phone" 
+                name="phone" 
+                value={agentDetails?.phone || ''} 
+                disabled 
+                readOnly
+              />
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="issuerPerson">Yetkili Kişi</Label>
-              <Input id="issuerPerson" name="issuerPerson" disabled />
+              <Input 
+                id="issuer_person" 
+                name="issuer_person" 
+                value={agentDetails?.issuer_person || ''} 
+                disabled 
+                readOnly
+              />
             </div>
             
             
