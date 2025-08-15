@@ -23,6 +23,10 @@ export const initializeDatabase = async () => {
       passwordHash TEXT NOT NULL,
       role TEXT NOT NULL CHECK (role IN ('admin','agent')),
       createdAt INTEGER NOT NULL DEFAULT (strftime('%s','now') * 1000)
+      company_name TEXT
+      email TEXT
+      phone TEXT
+      issuer_person TEXT
     )
   `);
 

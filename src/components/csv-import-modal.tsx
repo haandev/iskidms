@@ -75,9 +75,9 @@ export default function CSVImportModal({ isOpen, onClose, onSuccess }: CSVImport
       <div className="max-w-2xl w-full mx-4">
         <Card>
           <CardHeader>
-            <CardTitle>Import Devices from CSV</CardTitle>
+            <CardTitle> Hesapları CSV dosyasından içe aktar</CardTitle>
             <CardDescription>
-              Upload devices in bulk using CSV format. Tümü will be created as unowned/pending.
+              Bir CSV dosyasından toplu olarak cihaz hesapları ekleyin. Tümü onaylı ve sahipsiz olarak eklenecektir.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -95,7 +95,7 @@ export default function CSVImportModal({ isOpen, onClose, onSuccess }: CSVImport
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="csvFile">Upload CSV File (Optional)</Label>
+                <Label htmlFor="csvFile">CSV'yi dosyadan yükle</Label>
                 <input
                   id="csvFile"
                   type="file"
@@ -107,7 +107,7 @@ export default function CSVImportModal({ isOpen, onClose, onSuccess }: CSVImport
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="csvData">CSV Data</Label>
+                <Label htmlFor="csvData">CSV Yapıştır</Label>
                 <Textarea
                   id="csvData"
                   value={csvData}
@@ -118,23 +118,23 @@ export default function CSVImportModal({ isOpen, onClose, onSuccess }: CSVImport
                   disabled={isLoading}
                 />
                 <p className="text-sm text-gray-600">
-                  Format: Each line should contain <code>username,password</code>
+                  Format: Her satır birer tane <code>username,password</code> içermelidir
                 </p>
               </div>
 
               <div className="bg-blue-50 border border-blue-200 p-3 rounded text-sm text-blue-800">
-                <strong>Format Guidelines:</strong>
+                <strong>Format rehberi:</strong>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>Each line: <code>device_username,device_password</code></li>
-                  <li>No header row required</li>
-                  <li>Empty lines will be skipped</li>
-                  <li>Tümü will be created as <strong>unowned</strong> and <strong>pending</strong></li>
-                  <li>You can assign ownership later using the transfer function</li>
+                  <li>Satırlar: <code>device_username,device_password</code></li>
+                  <li>Başlık gerekmemektedir</li>
+                  <li>Boş satırlar es geçilir</li>
+                  <li>Tümü <strong>sahipsiz</strong> ve <strong>onaylı</strong></li> eklenecektir
+                  <li>Daha sonra sahiplik ataması yapabilirsiniz</li>
                 </ul>
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 p-3 rounded text-sm text-yellow-800">
-                <strong>Example:</strong>
+                <strong>Örneğin:</strong>
                 <pre className="mt-1 font-mono text-xs">
 camera_001,SecurePass123
 sensor_002,MyPassword456
@@ -148,7 +148,7 @@ device_003,RandomKey789
                   className="flex-1"
                   disabled={isLoading || !csvData.trim()}
                 >
-                  {isLoading ? 'Importing...' : 'Import Devices'}
+                  {isLoading ? 'İçe aktarılıyor...' : 'İçe aktar'}
                 </Button>
                 <Button
                   type="button"
@@ -156,7 +156,7 @@ device_003,RandomKey789
                   onClick={handleClose}
                   disabled={isLoading}
                 >
-                  Cancel
+                  İptal
                 </Button>
               </div>
             </form>

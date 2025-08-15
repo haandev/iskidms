@@ -68,7 +68,52 @@ export default function CreateAgentModal({ isOpen, onClose, onSuccess }: CreateA
                   {success}
                 </div>
               )}
-              
+              <div className="space-y-2">
+                <Label htmlFor="company_name">Firma Adı</Label>
+                <Input
+                  id="company_name"
+                  name="company_name"
+                  type="text"
+                  required
+                  disabled={isLoading}
+                  placeholder="Firma adını giriniz"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">E-posta</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  disabled={isLoading}
+                  placeholder="E-posta adresinizi giriniz"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Telefon</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  required
+                  disabled={isLoading}
+                  placeholder="Telefon numaranızı giriniz"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="issuer_person">Yetkili Kişi</Label>
+                <Input
+                  id="issuer_person"
+                  name="issuer_person"
+                  type="text"
+                  required
+                  disabled={isLoading}
+                  placeholder="Yetkili kişi adını giriniz"
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="username">Kullanıcı Adı</Label>
                 <Input
