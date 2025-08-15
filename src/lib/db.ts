@@ -22,7 +22,7 @@ export const initializeDatabase = async () => {
       username TEXT UNIQUE NOT NULL,
       passwordHash TEXT NOT NULL,
       role TEXT NOT NULL CHECK (role IN ('admin','agent')),
-      createdAt INTEGER NOT NULL DEFAULT (strftime('%s','now') * 1000)
+      createdAt INTEGER NOT NULL DEFAULT (strftime('%s','now') * 1000),
       company_name TEXT NOT NULL,
       email TEXT NOT NULL,
       phone TEXT NOT NULL,
