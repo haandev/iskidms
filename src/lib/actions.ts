@@ -448,6 +448,105 @@ export async function changeAgentPasswordAction(formData: FormData) {
   }
 }
 
+export async function transferDeviceOwnershipAction(formData: FormData) {
+  const session = await auth.getSession();
+  
+  if (!session || session.user.role !== 'admin') {
+    return {
+      error: 'Unauthorized - admin access required',
+    };
+  }
+
+  const deviceId = formData.get('deviceId') as string;
+  const newAgentId = formData.get('newAgentId') as string;
+
+  if (!deviceId || !newAgentId) {
+    return {
+      error: 'Device ID and new agent are required',
+    };
+  }
+
+  try {
+    // Verify device exists
+    const device = deviceOperations.findById(deviceId);
+    if (!device) {
+      return {
+        error: 'Device not found',
+      };
+    }
+
+    // Verify new agent exists and is an agent
+    const newAgent = userOperations.findById(newAgentId);
+    if (!newAgent) {
+      return {
+        error: 'New agent not found',
+      };
+    }
+
+    if (newAgent.role !== 'agent') {
+      return {
+        error: 'Target user must be an agent',
+      };
+    }
+
+    // Update device ownership
+    deviceOperations.transferOwnership(deviceId, newAgentId);
+    
+    revalidatePath('/admin');
+    
+    return {
+      success: `Device ownership transferred to ${newAgent.username} successfully`,
+    };
+  } catch (error) {
+    console.error('Transfer device ownership error:', error);
+    return {
+      error: 'Failed to transfer device ownership',
+    };
+  }
+}
+
+export async function removeDeviceOwnershipAction(formData: FormData) {
+  const session = await auth.getSession();
+  
+  if (!session || session.user.role !== 'admin') {
+    return {
+      error: 'Unauthorized - admin access required',
+    };
+  }
+
+  const deviceId = formData.get('deviceId') as string;
+
+  if (!deviceId) {
+    return {
+      error: 'Device ID is required',
+    };
+  }
+
+  try {
+    // Verify device exists
+    const device = deviceOperations.findById(deviceId);
+    if (!device) {
+      return {
+        error: 'Device not found',
+      };
+    }
+
+    // Remove device ownership
+    deviceOperations.removeOwnership(deviceId);
+    
+    revalidatePath('/admin');
+    
+    return {
+      success: 'Device ownership removed successfully',
+    };
+  } catch (error) {
+    console.error('Remove device ownership error:', error);
+    return {
+      error: 'Failed to remove device ownership',
+    };
+  }
+}
+
 // Helper function to get all agents (admin only)
 export async function getAllAgents() {
   const session = await auth.getSession();

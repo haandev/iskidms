@@ -40,12 +40,12 @@ const createTables = () => {
   db.exec(`
     CREATE TABLE IF NOT EXISTS devices (
       id TEXT PRIMARY KEY,
-      agentId TEXT NOT NULL,
+      agentId TEXT,
       username TEXT NOT NULL,
       password TEXT NOT NULL,
       status TEXT NOT NULL CHECK (status IN ('pending', 'active')) DEFAULT 'pending',
       createdAt INTEGER NOT NULL DEFAULT (unixepoch() * 1000),
-      FOREIGN KEY (agentId) REFERENCES users (id) ON DELETE CASCADE
+      FOREIGN KEY (agentId) REFERENCES users (id) ON DELETE SET NULL
     )
   `);
 
@@ -222,7 +222,7 @@ export const deviceOperations = {
     return db.prepare(`
       SELECT d.*, u.username as agentName
       FROM devices d
-      JOIN users u ON d.agentId = u.id
+      LEFT JOIN users u ON d.agentId = u.id
       WHERE d.status = 'pending'
       ORDER BY d.createdAt DESC
     `).all() as any[];
@@ -232,7 +232,7 @@ export const deviceOperations = {
     return db.prepare(`
       SELECT d.*, u.username as agentName
       FROM devices d
-      JOIN users u ON d.agentId = u.id
+      LEFT JOIN users u ON d.agentId = u.id
       ORDER BY d.createdAt DESC
     `).all() as any[];
   },
@@ -247,6 +247,18 @@ export const deviceOperations = {
 
   findById: (deviceId: string) => {
     return db.prepare('SELECT * FROM devices WHERE id = ?').get(deviceId) as any;
+  },
+
+  transferOwnership: (deviceId: string, newAgentId: string) => {
+    db.prepare(`
+      UPDATE devices SET agentId = ? WHERE id = ?
+    `).run(newAgentId, deviceId);
+  },
+
+  removeOwnership: (deviceId: string) => {
+    db.prepare(`
+      UPDATE devices SET agentId = NULL WHERE id = ?
+    `).run(deviceId);
   },
 };
 
