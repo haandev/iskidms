@@ -10,6 +10,7 @@ import { approveDeviceAction, deleteDeviceAction, deleteAgentAction, logoutActio
 import { User } from '@/lib/auth';
 import PasswordChangeModal from '@/components/password-change-modal';
 import CreateAgentModal from '@/components/create-agent-modal';
+import ChangeAgentPasswordModal from '@/components/change-agent-password-modal';
 
 interface Device {
   id: string;
@@ -45,6 +46,8 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
   const [activeTab, setActiveTab] = useState<'pending' | 'all' | 'agents'>('pending');
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showCreateAgentModal, setShowCreateAgentModal] = useState(false);
+  const [showChangeAgentPasswordModal, setShowChangeAgentPasswordModal] = useState(false);
+  const [selectedAgentForPasswordChange, setSelectedAgentForPasswordChange] = useState<{id: string; username: string} | null>(null);
   const [deviceFilter, setDeviceFilter] = useState<string>('');
   const [selectedAgent, setSelectedAgent] = useState<string>('');
 
@@ -105,6 +108,16 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
   }
 
   async function handleCreateAgentSuccess() {
+    // Refresh the page to get updated data
+    window.location.reload();
+  }
+
+  function handleChangeAgentPassword(agent: {id: string; username: string}) {
+    setSelectedAgentForPasswordChange(agent);
+    setShowChangeAgentPasswordModal(true);
+  }
+
+  function handleChangeAgentPasswordSuccess() {
     // Refresh the page to get updated data
     window.location.reload();
   }
@@ -514,16 +527,26 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
                               {formatDate(agent.createdAt)}
                             </TableCell>
                             <TableCell>
-                              {agent.id !== user.id && (
+                              <div className="flex gap-2">
                                 <Button
                                   size="sm"
-                                  variant="destructive"
-                                  onClick={() => handleDeleteAgent(agent.id)}
+                                  variant="outline"
+                                  onClick={() => handleChangeAgentPassword({id: agent.id, username: agent.username})}
                                   disabled={loadingAgent === agent.id}
                                 >
-                                  {loadingAgent === agent.id ? 'Deleting...' : 'Delete'}
+                                  Change Password
                                 </Button>
-                              )}
+                                {agent.id !== user.id && (
+                                  <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => handleDeleteAgent(agent.id)}
+                                    disabled={loadingAgent === agent.id}
+                                  >
+                                    {loadingAgent === agent.id ? 'Deleting...' : 'Delete'}
+                                  </Button>
+                                )}
+                              </div>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -548,6 +571,17 @@ export default function AdminDashboard({ user, pendingDevices: initialPendingDev
         isOpen={showCreateAgentModal}
         onClose={() => setShowCreateAgentModal(false)}
         onSuccess={handleCreateAgentSuccess}
+      />
+
+      {/* Change Agent Password Modal */}
+      <ChangeAgentPasswordModal 
+        isOpen={showChangeAgentPasswordModal}
+        onClose={() => {
+          setShowChangeAgentPasswordModal(false);
+          setSelectedAgentForPasswordChange(null);
+        }}
+        onSuccess={handleChangeAgentPasswordSuccess}
+        agent={selectedAgentForPasswordChange}
       />
     </div>
   );

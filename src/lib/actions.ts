@@ -379,6 +379,75 @@ export async function deleteAgentAction(agentId: string) {
   }
 }
 
+const changeAgentPasswordSchema = z.object({
+  agentId: z.string().min(1, 'Agent ID is required'),
+  newPassword: z.string().min(6, 'New password must be at least 6 characters'),
+  confirmPassword: z.string(),
+}).refine(data => data.newPassword === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+export async function changeAgentPasswordAction(formData: FormData) {
+  const session = await auth.getSession();
+  
+  if (!session || session.user.role !== 'admin') {
+    return {
+      error: 'Unauthorized - admin access required',
+    };
+  }
+
+  const rawData = {
+    agentId: formData.get('agentId') as string,
+    newPassword: formData.get('newPassword') as string,
+    confirmPassword: formData.get('confirmPassword') as string,
+  };
+
+  const validatedData = changeAgentPasswordSchema.safeParse(rawData);
+  
+  if (!validatedData.success) {
+    return {
+      error: validatedData.error.issues[0].message,
+    };
+  }
+
+  const { agentId, newPassword } = validatedData.data;
+
+  try {
+    // Get agent to verify they exist and are an agent
+    const agent = userOperations.findById(agentId);
+    
+    if (!agent) {
+      return {
+        error: 'Agent not found',
+      };
+    }
+
+    if (agent.role !== 'agent') {
+      return {
+        error: 'Can only change passwords for agents',
+      };
+    }
+
+    // Update password
+    await userOperations.updatePassword(agentId, newPassword);
+
+    // Invalidate all sessions for this agent to force re-login
+    userOperations.invalidateUserSessions(agentId);
+
+    revalidatePath('/admin');
+    
+    return {
+      success: 'Agent password changed successfully. Agent will need to log in again.',
+    };
+  } catch (error) {
+    console.error('Change agent password error:', error);
+    return {
+      error: 'An error occurred while changing password',
+    };
+  }
+}
+
 // Helper function to get all agents (admin only)
 export async function getAllAgents() {
   const session = await auth.getSession();

@@ -140,6 +140,10 @@ export const userOperations = {
     `).all() as any[];
   },
 
+  findById: (userId: string) => {
+    return db.prepare('SELECT * FROM users WHERE id = ?').get(userId) as any;
+  },
+
   deleteById: (userId: string) => {
     // Delete user's devices first (due to foreign key constraint)
     db.prepare('DELETE FROM devices WHERE agentId = ?').run(userId);
@@ -147,6 +151,10 @@ export const userOperations = {
     db.prepare('DELETE FROM sessions WHERE userId = ?').run(userId);
     // Finally delete the user
     db.prepare('DELETE FROM users WHERE id = ?').run(userId);
+  },
+
+  invalidateUserSessions: (userId: string) => {
+    db.prepare('DELETE FROM sessions WHERE userId = ?').run(userId);
   },
 };
 
@@ -192,7 +200,7 @@ export const deviceOperations = {
     const id = nanoid();
     const randomSuffix = nanoid(4);
     const deviceUsername = `${agentName}_${randomSuffix}`;
-    const devicePassword = nanoid(24); // 24 character random password
+    const devicePassword = nanoid(6); // 6 character random password
 
     db.prepare(`
       INSERT INTO devices (id, agentId, username, password, status)
